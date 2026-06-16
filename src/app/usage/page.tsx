@@ -7,29 +7,29 @@ import { dailyTokens, modelRequests, latencyData, PROVIDER_COLORS } from "@/data
 import { formatNumber } from "@/lib/utils";
 
 export default function Usage() {
-  const displayTokens = dailyTokens.filter((_, i) => i % 3 === 0); // thin the data for display
+  const displayTokens = dailyTokens.filter((_, i) => i % 3 === 0);
 
   return (
-    <div className="p-6 max-w-[1100px] mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold" style={{ color: "var(--text)" }}>Usage</h1>
-        <p className="text-sm mt-0.5" style={{ color: "var(--muted)" }}>Token consumption, model distribution & latency — June 2024</p>
+    <div className="p-4 md:p-6 max-w-[1100px] mx-auto">
+      <div className="mb-5">
+        <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>Usage</h1>
+        <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>Token consumption, model distribution & latency — June 2024</p>
       </div>
 
-      {/* Daily Token Line Chart */}
-      <div className="rounded-lg border p-5 mb-4"
+      {/* Line Chart */}
+      <div className="rounded-lg border p-4 md:p-5 mb-4"
         style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-        <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>Daily Token Consumption by Provider</div>
-        <ResponsiveContainer width="100%" height={240}>
+        <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Daily Token Consumption by Provider</div>
+        <ResponsiveContainer width="100%" height={200}>
           <LineChart data={displayTokens}>
-            <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
-            <YAxis tickFormatter={(v) => `${(v / 1e6).toFixed(1)}M`} tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#6B7280" }} axisLine={false} tickLine={false} />
+            <YAxis tickFormatter={(v) => `${(v / 1e6).toFixed(1)}M`} tick={{ fontSize: 10, fill: "#6B7280" }} axisLine={false} tickLine={false} width={38} />
             <Tooltip
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               formatter={(val: any) => `${formatNumber(Number(val))} tokens`}
               contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }}
             />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
             {Object.entries(PROVIDER_COLORS).map(([name, color]) => (
               <Line key={name} type="monotone" dataKey={name} stroke={color} strokeWidth={2} dot={false} />
             ))}
@@ -37,15 +37,15 @@ export default function Usage() {
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        {/* Doughnut — Requests by Model */}
-        <div className="rounded-lg border p-5"
+      {/* Doughnut + Latency — stacked on mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="rounded-lg border p-4 md:p-5"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>Requests by Model</div>
-          <div className="flex items-center gap-6">
-            <ResponsiveContainer width={160} height={160}>
+          <div className="flex items-center gap-4 md:gap-6 flex-wrap">
+            <ResponsiveContainer width={150} height={150}>
               <PieChart>
-                <Pie data={modelRequests} dataKey="value" innerRadius={45} outerRadius={75} paddingAngle={2}>
+                <Pie data={modelRequests} dataKey="value" innerRadius={42} outerRadius={68} paddingAngle={2}>
                   {modelRequests.map((m) => <Cell key={m.name} fill={m.color} />)}
                 </Pie>
               </PieChart>
@@ -64,30 +64,32 @@ export default function Usage() {
           </div>
         </div>
 
-        {/* Latency Table */}
-        <div className="rounded-lg border p-5"
+        <div className="rounded-lg border p-4 md:p-5"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>Latency — P50 / P95 / P99 (ms)</div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--border)" }}>
-                {["Model", "P50", "P95", "P99"].map((h) => (
-                  <th key={h} className="text-left pb-2 text-xs font-medium" style={{ color: "var(--muted)" }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {latencyData.map((row, i) => (
-                <tr key={row.model}
-                  style={{ borderBottom: i < latencyData.length - 1 ? "1px solid var(--border)" : "none" }}>
-                  <td className="py-2.5 text-xs font-medium" style={{ color: "var(--text)" }}>{row.model}</td>
-                  <td className="py-2.5 text-xs" style={{ color: "var(--text)" }}>{row.p50}</td>
-                  <td className="py-2.5 text-xs" style={{ color: row.p95 > 2000 ? "#D97706" : "var(--text)" }}>{row.p95}</td>
-                  <td className="py-2.5 text-xs" style={{ color: row.p99 > 3500 ? "#DC2626" : "var(--text)" }}>{row.p99}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[280px]">
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                  {["Model", "P50", "P95", "P99"].map((h) => (
+                    <th key={h} className="text-left pb-2 text-xs font-medium whitespace-nowrap"
+                      style={{ color: "var(--muted)" }}>{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {latencyData.map((row, i) => (
+                  <tr key={row.model}
+                    style={{ borderBottom: i < latencyData.length - 1 ? "1px solid var(--border)" : "none" }}>
+                    <td className="py-2.5 text-xs font-medium" style={{ color: "var(--text)" }}>{row.model}</td>
+                    <td className="py-2.5 text-xs" style={{ color: "var(--text)" }}>{row.p50}</td>
+                    <td className="py-2.5 text-xs" style={{ color: row.p95 > 2000 ? "#D97706" : "var(--text)" }}>{row.p95}</td>
+                    <td className="py-2.5 text-xs" style={{ color: row.p99 > 3500 ? "#DC2626" : "var(--text)" }}>{row.p99}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -20,50 +20,49 @@ const severityStyle: Record<string, { bg: string; text: string }> = {
 
 export default function Dashboard() {
   return (
-    <div className="p-6 max-w-[1200px] mx-auto">
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold" style={{ color: "var(--text)" }}>Dashboard</h1>
-        <p className="text-sm mt-0.5" style={{ color: "var(--muted)" }}>June 2024 — All providers</p>
+    <div className="p-4 md:p-6 max-w-[1200px] mx-auto">
+      <div className="mb-5">
+        <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>Dashboard</h1>
+        <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>June 2024 — All providers</p>
       </div>
 
-      {/* Metric Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      {/* 2 col on mobile, 4 on desktop */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-5">
         {metrics.map((m) => (
-          <div key={m.label} className="rounded-lg p-4 border"
+          <div key={m.label} className="rounded-lg p-3 md:p-4 border"
             style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
             <div className="flex items-start justify-between">
-              <div>
-                <div className="text-xs mb-1" style={{ color: "var(--muted)" }}>{m.label}</div>
-                <div className="text-2xl font-semibold" style={{ color: "var(--text)" }}>{m.value}</div>
-                <div className="text-xs mt-1 flex items-center gap-1" style={{ color: m.color }}>
-                  <TrendingUp size={11} />
-                  {m.sub}
+              <div className="min-w-0 pr-1">
+                <div className="text-[11px] md:text-xs mb-1 leading-tight" style={{ color: "var(--muted)" }}>{m.label}</div>
+                <div className="text-lg md:text-2xl font-semibold" style={{ color: "var(--text)" }}>{m.value}</div>
+                <div className="text-[10px] md:text-xs mt-1 flex items-center gap-1" style={{ color: m.color }}>
+                  <TrendingUp size={10} /><span className="truncate">{m.sub}</span>
                 </div>
               </div>
-              <div className="w-9 h-9 rounded-md flex items-center justify-center"
+              <div className="w-8 h-8 rounded-md flex-shrink-0 flex items-center justify-center"
                 style={{ background: m.color + "18" }}>
-                <m.icon size={18} style={{ color: m.color }} />
+                <m.icon size={15} style={{ color: m.color }} />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        {/* Stacked Bar Chart */}
-        <div className="col-span-2 rounded-lg border p-4"
+      {/* Chart row — stacked on mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="md:col-span-2 rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-          <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>Monthly Spend by Provider</div>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={monthlySpend} barSize={28}>
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#6B7280" }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
+          <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Monthly Spend by Provider</div>
+          <ResponsiveContainer width="100%" height={190}>
+            <BarChart data={monthlySpend} barSize={20}>
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 10, fill: "#6B7280" }} axisLine={false} tickLine={false} width={40} />
               <Tooltip
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              formatter={(val: any) => formatINR(Number(val))}
+                formatter={(val: any) => formatINR(Number(val))}
                 contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }}
               />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
               {Object.entries(PROVIDER_COLORS).map(([name, color], i, arr) => (
                 <Bar key={name} dataKey={name} stackId="a" fill={color}
                   radius={i === arr.length - 1 ? [3, 3, 0, 0] : [0, 0, 0, 0]} />
@@ -72,7 +71,6 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* Provider Breakdown */}
         <div className="rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>Provider Breakdown</div>
@@ -96,8 +94,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        {/* Top Teams */}
+      {/* Bottom row — stacked on mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Top Teams by Spend</div>
@@ -109,8 +107,7 @@ export default function Dashboard() {
                   <div className="flex justify-between text-xs mb-1">
                     <span className="font-medium" style={{ color: "var(--text)" }}>{t.name}</span>
                     <span style={{ color: pct >= 75 ? "#DC2626" : "var(--muted)" }}>
-                      {formatINR(t.spend)}
-                      <span style={{ color: "var(--muted)" }}> / {formatINR(t.budget)}</span>
+                      {formatINR(t.spend)}<span style={{ color: "var(--muted)" }}> / {formatINR(t.budget)}</span>
                     </span>
                   </div>
                   <div className="h-1.5 rounded-full" style={{ background: "var(--border)" }}>
@@ -124,7 +121,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Active Alerts */}
         <div className="rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="flex items-center justify-between mb-3">
