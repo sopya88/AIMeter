@@ -1,97 +1,131 @@
 "use client";
 import { useState } from "react";
-import { AlertTriangle, CheckCircle, Plus, X } from "lucide-react";
-import { allAlerts } from "@/data/mock";
+import { Bell, Plus, Mail, ToggleLeft, ToggleRight } from "lucide-react";
+import { alerts as initAlerts, meters, type Alert, type AlertChannel, type AlertScope } from "@/data/mock";
 
-const severityStyle: Record<string, { bg: string; text: string; border: string }> = {
-  critical: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
-  warning: { bg: "#FFFBEB", text: "#D97706", border: "#FDE68A" },
+const statusStyle = {
+  enabled:  { bg: "#DCFCE7", text: "#16A34A" },
+  disabled: { bg: "#F3F4F6", text: "#6B7280" },
 };
 
-type NewAlert = { team: string; type: string; threshold: string; channels: string[] };
-const defaultAlert: NewAlert = { team: "", type: "budget", threshold: "", channels: [] };
+const ChannelIcon = ({ ch }: { ch: AlertChannel }) => {
+  if (ch === "slack")   return <span className="text-[11px] font-bold" style={{ color: "#4A154B" }}>S</span>;
+  if (ch === "email")   return <Mail size={13} style={{ color: "#185FA5" }} />;
+  if (ch === "webhook") return <span className="text-[11px] font-bold" style={{ color: "#D97706" }}>⚡</span>;
+  return null;
+};
 
-export default function Alerts() {
-  const [alerts, setAlerts] = useState(allAlerts);
+const scopeLabel: Record<AlertScope, string> = {
+  each_customer:     "Each customer",
+  all_customers:     "All customers",
+  specific_customer: "Specific customer",
+};
+
+const defaultForm = { name: "", alertOn: "usage", meter: "", rule: "", scope: "each_customer" as AlertScope, sendTo: [] as AlertChannel[] };
+
+export default function AlertsPage() {
+  const [rows, setRows]     = useState<Alert[]>(initAlerts);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState<NewAlert>(defaultAlert);
+  const [form, setForm]     = useState(defaultForm);
 
-  const dismiss = (id: number) => setAlerts((a) => a.filter((x) => x.id !== id));
+  const toggle = (id: string) =>
+    setRows((prev) => prev.map((a) => a.id === id
+      ? { ...a, status: a.status === "enabled" ? "disabled" : "enabled" }
+      : a));
 
-  const toggleChannel = (ch: string) =>
+  const toggleCh = (ch: AlertChannel) =>
     setForm((f) => ({
       ...f,
-      channels: f.channels.includes(ch) ? f.channels.filter((c) => c !== ch) : [...f.channels, ch],
+      sendTo: f.sendTo.includes(ch) ? f.sendTo.filter((c) => c !== ch) : [...f.sendTo, ch],
     }));
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.team || !form.threshold) return;
-    setAlerts((a) => [{
-      id: Date.now(), type: form.type, team: form.team,
-      message: `${form.type === "budget" ? `Budget threshold ${form.threshold}%` : `${form.type.replace("_", " ")} alert at ${form.threshold}%`}`,
-      severity: "warning", created: new Date().toISOString().slice(0, 10),
-    }, ...a]);
-    setForm(defaultAlert);
+    if (!form.name || !form.meter || !form.rule) return;
+    setRows((prev) => [{
+      id: String(Date.now()), name: form.name, alertOn: form.alertOn,
+      meter: form.meter, rule: form.rule, scope: form.scope,
+      sendTo: form.sendTo, status: "enabled",
+      modified: new Date().toISOString().slice(0, 10),
+    }, ...prev]);
+    setForm(defaultForm);
     setShowForm(false);
   };
 
   return (
-    <div className="p-4 md:p-6 max-w-[900px] mx-auto">
+    <div className="p-4 md:p-6 max-w-[1100px] mx-auto">
       <div className="flex items-center justify-between mb-5 gap-3">
         <div>
           <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>Alerts</h1>
-          <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>Monitor budget, cost spikes & token anomalies</p>
+          <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>Rules that watch meters and notify your team</p>
         </div>
         <button onClick={() => setShowForm(!showForm)}
           className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-white flex-shrink-0"
           style={{ background: "var(--accent)" }}>
-          <Plus size={14} />
-          <span className="hidden sm:inline">New Alert</span>
-          <span className="sm:hidden">New</span>
+          <Plus size={14} /><span className="hidden sm:inline">Create alert</span><span className="sm:hidden">New</span>
         </button>
       </div>
 
+      {/* Create form */}
       {showForm && (
         <div className="rounded-lg border p-4 md:p-5 mb-5"
           style={{ background: "var(--surface)", borderColor: "var(--accent)" }}>
-          <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>Create New Alert</div>
+          <div className="text-sm font-medium mb-4" style={{ color: "var(--text)" }}>New Alert Rule</div>
           <form onSubmit={submit} className="flex flex-col gap-4">
-            {/* Stack 2 cols on mobile too but use grid on sm+ */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Team</label>
-                <input value={form.team} onChange={(e) => setForm({ ...form, team: e.target.value })}
-                  placeholder="e.g. Data Science"
+                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Alert name</label>
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  placeholder="e.g. High token usage"
                   className="w-full text-sm px-3 py-2 rounded-md border outline-none"
                   style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }} />
               </div>
               <div>
-                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Alert Type</label>
-                <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
+                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Alert on</label>
+                <select value={form.alertOn} onChange={(e) => setForm({ ...form, alertOn: e.target.value })}
                   className="w-full text-sm px-3 py-2 rounded-md border outline-none"
                   style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }}>
-                  <option value="budget">Budget %</option>
-                  <option value="cost_spike">Cost Spike</option>
-                  <option value="token_spike">Token Spike</option>
+                  <option value="usage">Usage</option>
+                  <option value="cost">Cost</option>
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Threshold (%)</label>
-                <input value={form.threshold} onChange={(e) => setForm({ ...form, threshold: e.target.value })}
-                  placeholder="e.g. 80" type="number" min="1" max="100"
+                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Meter</label>
+                <select value={form.meter} onChange={(e) => setForm({ ...form, meter: e.target.value })}
+                  className="w-full text-sm px-3 py-2 rounded-md border outline-none"
+                  style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }}>
+                  <option value="">Select meter…</option>
+                  {meters.filter((m) => m.status === "active").map((m) => (
+                    <option key={m.id} value={m.label}>{m.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Rule (e.g. &gt; 1000000)</label>
+                <input value={form.rule} onChange={(e) => setForm({ ...form, rule: e.target.value })}
+                  placeholder="> 1,000,000"
                   className="w-full text-sm px-3 py-2 rounded-md border outline-none"
                   style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }} />
               </div>
               <div>
-                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Notify via</label>
+                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Scope</label>
+                <select value={form.scope} onChange={(e) => setForm({ ...form, scope: e.target.value as AlertScope })}
+                  className="w-full text-sm px-3 py-2 rounded-md border outline-none"
+                  style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }}>
+                  <option value="each_customer">Each customer</option>
+                  <option value="all_customers">All customers</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-medium block mb-1" style={{ color: "var(--muted)" }}>Send to</label>
                 <div className="flex gap-2">
-                  {["Email", "Slack", "WhatsApp"].map((ch) => (
-                    <button type="button" key={ch} onClick={() => toggleChannel(ch)}
-                      className="flex-1 py-2 rounded-md text-xs font-medium border transition-colors"
-                      style={form.channels.includes(ch)
+                  {(["slack", "email", "webhook"] as AlertChannel[]).map((ch) => (
+                    <button type="button" key={ch} onClick={() => toggleCh(ch)}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs border font-medium transition-colors capitalize"
+                      style={form.sendTo.includes(ch)
                         ? { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }
                         : { background: "var(--bg)", color: "var(--muted)", borderColor: "var(--border)" }}>
+                      <ChannelIcon ch={ch} />
                       {ch}
                     </button>
                   ))}
@@ -101,48 +135,71 @@ export default function Alerts() {
             <div className="flex gap-2 justify-end">
               <button type="button" onClick={() => setShowForm(false)}
                 className="px-4 py-2 rounded-md text-sm border"
-                style={{ borderColor: "var(--border)", color: "var(--muted)" }}>
-                Cancel
-              </button>
+                style={{ borderColor: "var(--border)", color: "var(--muted)" }}>Cancel</button>
               <button type="submit"
                 className="px-4 py-2 rounded-md text-sm font-medium text-white"
-                style={{ background: "var(--accent)" }}>
-                Create Alert
-              </button>
+                style={{ background: "var(--accent)" }}>Create</button>
             </div>
           </form>
         </div>
       )}
 
-      <div className="flex flex-col gap-3">
-        {alerts.length === 0 && (
-          <div className="flex flex-col items-center gap-2 py-12" style={{ color: "var(--muted)" }}>
-            <CheckCircle size={32} /><div className="text-sm">No active alerts</div>
-          </div>
-        )}
-        {alerts.map((a) => {
-          const s = severityStyle[a.severity];
-          return (
-            <div key={a.id} className="flex items-start gap-3 rounded-lg border p-4"
-              style={{ background: s.bg, borderColor: s.border }}>
-              <AlertTriangle size={15} style={{ color: s.text, marginTop: 1, flexShrink: 0 }} />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                  <span className="text-sm font-medium" style={{ color: s.text }}>{a.team}</span>
-                  <span className="text-xs px-1.5 py-0.5 rounded font-medium uppercase tracking-wide"
-                    style={{ background: s.text + "18", color: s.text }}>{a.severity}</span>
-                  <span className="text-xs px-1.5 py-0.5 rounded"
-                    style={{ background: "white", color: "var(--muted)" }}>{a.type.replace("_", " ")}</span>
-                </div>
-                <div className="text-sm" style={{ color: "var(--text)" }}>{a.message}</div>
-                <div className="text-xs mt-1" style={{ color: "var(--muted)" }}>{a.created}</div>
-              </div>
-              <button onClick={() => dismiss(a.id)} className="p-1 rounded flex-shrink-0">
-                <X size={14} style={{ color: "var(--muted)" }} />
-              </button>
-            </div>
-          );
-        })}
+      {/* Alert table */}
+      <div className="rounded-lg border overflow-hidden"
+        style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
+            <thead>
+              <tr style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
+                {["Name", "Alert on", "Rule", "Scope", "Send to", "Status", "Modified", ""].map((h) => (
+                  <th key={h} className="text-left px-4 py-3 text-xs font-medium whitespace-nowrap"
+                    style={{ color: "var(--muted)" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((a, i) => {
+                const s = statusStyle[a.status];
+                return (
+                  <tr key={a.id}
+                    style={{ borderBottom: i < rows.length - 1 ? "1px solid var(--border)" : "none" }}>
+                    <td className="px-4 py-3">
+                      <span className="flex items-center gap-2">
+                        <Bell size={13} style={{ color: "var(--accent)", flexShrink: 0 }} />
+                        <span className="font-medium text-xs" style={{ color: "var(--text)" }}>{a.name}</span>
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="text-xs capitalize" style={{ color: "var(--text)" }}>{a.alertOn}</div>
+                      <div className="text-[10px] mt-0.5" style={{ color: "var(--muted)" }}>{a.meter}</div>
+                    </td>
+                    <td className="px-4 py-3 text-xs font-mono whitespace-nowrap" style={{ color: "var(--text)" }}>{a.rule}</td>
+                    <td className="px-4 py-3 text-xs whitespace-nowrap" style={{ color: "var(--muted)" }}>{scopeLabel[a.scope]}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1.5">
+                        {a.sendTo.map((ch) => <ChannelIcon key={ch} ch={ch} />)}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: s.bg, color: s.text }}>
+                        {a.status.charAt(0).toUpperCase() + a.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs whitespace-nowrap" style={{ color: "var(--muted)" }}>{a.modified}</td>
+                    <td className="px-4 py-3">
+                      <button onClick={() => toggle(a.id)} title="Toggle status">
+                        {a.status === "enabled"
+                          ? <ToggleRight size={20} style={{ color: "var(--accent)" }} />
+                          : <ToggleLeft  size={20} style={{ color: "var(--muted)" }} />}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
