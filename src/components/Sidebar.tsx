@@ -42,7 +42,7 @@ const sections: { title: string; items: NavItem[] }[] = [
 ];
 
 // Routes that are built (vs greyed-out placeholders)
-const BUILT = new Set(["/", "/meters", "/cost-items", "/pricing", "/alerts", "/customers"]);
+const BUILT = new Set(["/", "/usage", "/revenue", "/meters", "/cost-items", "/pricing", "/alerts", "/customers"]);
 
 export default function Sidebar() {
   const path = usePathname();
@@ -121,9 +121,9 @@ export default function Sidebar() {
       >
         {[
           { label: "Home",     href: "/",          icon: LayoutDashboard },
+          { label: "Usage",    href: "/usage",     icon: BarChart2 },
+          { label: "Revenue",  href: "/revenue",   icon: TrendingUp },
           { label: "Meters",   href: "/meters",    icon: Activity },
-          { label: "Cost",     href: "/cost-items",icon: DollarSign },
-          { label: "Pricing",  href: "/pricing",   icon: Tag },
           { label: "Alerts",   href: "/alerts",    icon: Bell },
           { label: "Customers",href: "/customers", icon: Users },
         ].map(({ label, href, icon: Icon }) => {
