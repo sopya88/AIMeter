@@ -42,7 +42,7 @@ const sections: { title: string; items: NavItem[] }[] = [
 ];
 
 // Routes that are built (vs greyed-out placeholders)
-const BUILT = new Set(["/", "/usage", "/revenue", "/meters", "/cost-items", "/pricing", "/alerts", "/customers"]);
+const BUILT = new Set(["/", "/usage", "/revenue", "/meters", "/cost-items", "/pricing", "/commitments", "/alerts", "/customers"]);
 
 export default function Sidebar() {
   const path = usePathname();
