@@ -1,13 +1,15 @@
 "use client";
 import { useState } from "react";
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  BarChart, Bar,
 } from "recharts";
-import { Cpu, DollarSign, PhoneCall, Users } from "lucide-react";
+import { Cpu, DollarSign, PhoneCall, Users, Shield, AlertTriangle } from "lucide-react";
 import {
   dailyUsage, providerColors, providerBreakdown, summaryMetrics,
+  departments, licenses,
 } from "@/data/mock";
-import { formatUSD, formatTokens, formatNumber } from "@/lib/utils";
+import { formatUSD, formatTokens, formatNumber, formatINR } from "@/lib/utils";
 
 type GroupBy = "openai" | "anthropic" | "google" | "cohere";
 const GROUP_OPTS: { value: GroupBy; label: string }[] = [
@@ -102,6 +104,62 @@ export default function Dashboard() {
             ))}
           </LineChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Governance quick-view */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        {/* Department spend */}
+        <div className="rounded-lg border p-4"
+          style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm font-medium" style={{ color: "var(--text)" }}>Dept. AI Spend (₹)</div>
+            <a href="/audit" className="text-xs" style={{ color: "var(--accent)" }}>View audit →</a>
+          </div>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={departments.map((d) => ({ name: d.name.split(" ")[0], spent: d.spentINR, budget: d.budgetINR }))} barSize={14} barGap={2}>
+              <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#6B7280" }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 8, fill: "#6B7280" }} axisLine={false} tickLine={false} width={38} />
+              <Tooltip
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                formatter={(val: any) => formatINR(Number(val))}
+                contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid var(--border)" }} />
+              <Bar dataKey="budget" name="Budget"  fill="var(--border)"  radius={[3, 3, 0, 0]} />
+              <Bar dataKey="spent"  name="Spent"   fill="var(--accent)"  radius={[3, 3, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* License alerts */}
+        <div className="rounded-lg border p-4"
+          style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-sm font-medium" style={{ color: "var(--text)" }}>License Governance</div>
+            <a href="/licenses" className="text-xs" style={{ color: "var(--accent)" }}>Manage →</a>
+          </div>
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            {[
+              { label: "Total Licenses",  value: String(licenses.length),                                            color: "#185FA5", icon: Shield },
+              { label: "Unused",          value: String(licenses.filter((l) => l.status === "unused").length),       color: "#D97706", icon: AlertTriangle },
+              { label: "Monthly Spend",   value: formatINR(licenses.reduce((s, l) => s + l.monthlySpendINR, 0)),     color: "#1D9E75", icon: Users },
+              { label: "Wasted/month",    value: formatINR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0)), color: "#DC2626", icon: AlertTriangle },
+            ].map((m) => (
+              <div key={m.label} className="rounded-lg border p-2.5"
+                style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <m.icon size={11} style={{ color: m.color }} />
+                  <span className="text-[10px]" style={{ color: "var(--muted)" }}>{m.label}</span>
+                </div>
+                <div className="text-base font-semibold" style={{ color: "var(--text)" }}>{m.value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="text-[10px] px-2 py-1.5 rounded"
+            style={{ background: "#FEF3C7", color: "#D97706" }}>
+            ⚠ {licenses.filter((l) => l.status === "unused").length} unused licenses costing{" "}
+            {formatINR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/month.{" "}
+            <a href="/licenses" className="font-semibold underline">Review now</a>
+          </div>
+        </div>
       </div>
 
       {/* Provider breakdown table */}
