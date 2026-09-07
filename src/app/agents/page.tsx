@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Bot, Cpu, DollarSign, AlertTriangle, Play, Pause, Search } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -9,7 +9,7 @@ const statusMeta: Record<AgentStatus, { label: string; bg: string; text: string;
   running:   { label: "Running",   bg: "#DCFCE7", text: "#16A34A", dot: "#16A34A" },
   paused:    { label: "Paused",    bg: "#F3F4F6", text: "#6B7280", dot: "#6B7280" },
   error:     { label: "Error",     bg: "#FEF2F2", text: "#DC2626", dot: "#DC2626" },
-  scheduled: { label: "Scheduled", bg: "#EFF6FF", text: "#185FA5", dot: "#185FA5" },
+  scheduled: { label: "Scheduled", bg: "#EFF6FF", text: "#EA580C", dot: "#EA580C" },
 };
 
 const providerColors: Record<string, string> = {
@@ -64,7 +64,7 @@ export default function AgentsPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total Agent Cost (Jun)", value: formatINR(totalCostINR),   color: "#185FA5", icon: DollarSign },
+          { label: "Total Agent Cost (Jun)", value: formatINR(totalCostINR),   color: "#EA580C", icon: DollarSign },
           { label: "Running Agents",         value: String(runningCount),       color: "#1D9E75", icon: Play },
           { label: "Total API Calls",        value: formatNumber(totalApiCalls),color: "#EF9F27", icon: Cpu },
           { label: "Tokens Consumed",        value: formatTokens(totalTokens),  color: "#D4537E", icon: Bot },
@@ -87,7 +87,7 @@ export default function AgentsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
         <div className="rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-          <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Cost by Department (₹)</div>
+          <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Cost by Department (INR)</div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={deptCosts} barSize={28} layout="vertical">
               <XAxis type="number" tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
@@ -136,7 +136,7 @@ export default function AgentsPage() {
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <Search size={13} style={{ color: "var(--muted)" }} />
           <input value={search} onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search agent, owner, department…"
+            placeholder="Search agent, owner, department..."
             className="flex-1 bg-transparent outline-none text-xs"
             style={{ color: "var(--text)" }} />
         </div>
@@ -270,3 +270,4 @@ export default function AgentsPage() {
     </div>
   );
 }
+

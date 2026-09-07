@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine,
@@ -6,7 +6,7 @@ import {
 import { TrendingUp, AlertTriangle, CheckCircle, Clock, Plus } from "lucide-react";
 import { formatUSD, formatTokens, formatNumber } from "@/lib/utils";
 
-// ── Mock commitment data ──────────────────────────────────────────────────────
+// â”€â”€ Mock commitment data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 type CommitStatus = "on_track" | "at_risk" | "exceeded" | "completed";
 
 interface Commitment {
@@ -88,7 +88,7 @@ const statusMeta: Record<CommitStatus, { label: string; bg: string; text: string
   on_track:  { label: "On track",  bg: "#DCFCE7", text: "#16A34A", icon: CheckCircle },
   at_risk:   { label: "At risk",   bg: "#FFFBEB", text: "#D97706", icon: AlertTriangle },
   exceeded:  { label: "Exceeded",  bg: "#FEF2F2", text: "#DC2626", icon: AlertTriangle },
-  completed: { label: "Completed", bg: "#EFF6FF", text: "#185FA5", icon: CheckCircle },
+  completed: { label: "Completed", bg: "#EFF6FF", text: "#EA580C", icon: CheckCircle },
 };
 
 function pct(used: number, commit: number) {
@@ -97,7 +97,7 @@ function pct(used: number, commit: number) {
 function barColor(status: CommitStatus) {
   if (status === "exceeded") return "#DC2626";
   if (status === "at_risk")  return "#D97706";
-  if (status === "completed") return "#185FA5";
+  if (status === "completed") return "#EA580C";
   return "#1D9E75";
 }
 
@@ -132,7 +132,7 @@ export default function CommitmentsPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total committed (spend)", value: formatUSD(totalCommit),   color: "#185FA5", icon: TrendingUp },
+          { label: "Total committed (spend)", value: formatUSD(totalCommit),   color: "#EA580C", icon: TrendingUp },
           { label: "Total used (spend)",      value: formatUSD(totalUsed),     color: "#1D9E75", icon: CheckCircle },
           { label: "At-risk commitments",     value: String(atRiskCount),      color: "#D97706", icon: AlertTriangle },
           { label: "Exceeded commitments",    value: String(exceededCount),    color: "#DC2626", icon: AlertTriangle },
@@ -178,7 +178,7 @@ export default function CommitmentsPage() {
                   <div className="h-1.5 rounded-full"
                     style={{ width: `${p}%`, background: barColor(c.status) }} />
                 </div>
-                <div className="text-[10px] mt-1" style={{ color: "var(--muted)" }}>{p}% used · {c.period}</div>
+                <div className="text-[10px] mt-1" style={{ color: "var(--muted)" }}>{p}% used Â· {c.period}</div>
               </button>
             );
           })}
@@ -232,7 +232,7 @@ export default function CommitmentsPage() {
                 <span style={{ color: barColor(detail.status), fontWeight: 500 }}>{usedPct}% consumed</span>
                 {overage > 0 && (
                   <span style={{ color: "#DC2626", fontWeight: 500 }}>
-                    Overage: {formatUSD(overage)} ({detail.overageRate}× rate)
+                    Overage: {formatUSD(overage)} ({detail.overageRate}Ã— rate)
                   </span>
                 )}
                 {overage === 0 && (
@@ -290,7 +290,7 @@ export default function CommitmentsPage() {
                 <div className="text-xs mb-0.5" style={{ color: "var(--muted)" }}>Overage rate</div>
                 <div className="font-semibold" style={{ color: "var(--text)" }}>
                   {detail.type === "spend"
-                    ? `${detail.overageRate}× list price`
+                    ? `${detail.overageRate}Ã— list price`
                     : `$${detail.overageRate.toFixed(6)} / token`}
                 </div>
               </div>
@@ -309,3 +309,4 @@ export default function CommitmentsPage() {
     </div>
   );
 }
+

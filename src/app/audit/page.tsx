@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { FileText, Download, CheckCircle, Clock, AlertTriangle, Building2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -12,7 +12,7 @@ const statusMeta: Record<InvoiceStatus, { label: string; bg: string; text: strin
 };
 
 const vendorColors: Record<InvoiceVendor, string> = {
-  "Microsoft Azure": "#185FA5",
+  "Microsoft Azure": "#EA580C",
   "OpenAI":          "#378ADD",
   "Anthropic":       "#1D9E75",
   "Google Cloud":    "#EF9F27",
@@ -73,7 +73,7 @@ export default function AuditPage() {
             Audit & GST Reports
           </h1>
           <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>
-            GST invoice tracking · IGST 18% · TDS 2% · Cost-centre allocation · GSTIN: 27AABCU9603R1ZN
+            GST invoice tracking · IGST 18% · TDS 2% · Cost-centre allocation
           </p>
         </div>
         <button className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium border"
@@ -86,7 +86,7 @@ export default function AuditPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total AI Spend (ex-GST)", value: formatINR(totalAmountINR), color: "#185FA5", icon: Building2 },
+          { label: "Total AI Spend (ex-GST)", value: formatINR(totalAmountINR), color: "#EA580C", icon: Building2 },
           { label: "Total IGST (18%)",         value: formatINR(totalIGSTINR),   color: "#EF9F27", icon: FileText },
           { label: "TDS Deducted (2%)",        value: formatINR(totalTDSINR),    color: "#1D9E75", icon: CheckCircle },
           { label: "Overdue Invoices",          value: String(overdueCount),      color: "#DC2626", icon: AlertTriangle },
@@ -243,7 +243,7 @@ export default function AuditPage() {
                   {[
                     { label: "Base Amount",  value: formatINR(detail.amountINR),      color: "var(--text)" },
                     { label: "IGST (18%)",   value: `+ ${formatINR(detail.igstINR)}`, color: "#D97706" },
-                    { label: "TDS (2%)",     value: `− ${formatINR(detail.tdsINR)}`,  color: "#1D9E75" },
+                    { label: "TDS (2%)",     value: `âˆ’ ${formatINR(detail.tdsINR)}`,  color: "#1D9E75" },
                     { label: "Net Payable",  value: formatINR(detail.netPayableINR),  color: "var(--accent)" },
                   ].map(({ label, value, color }) => (
                     <div key={label} className="flex justify-between text-xs">
@@ -383,3 +383,4 @@ export default function AuditPage() {
     </div>
   );
 }
+

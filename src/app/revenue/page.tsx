@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
   LineChart, Line,
@@ -50,13 +50,13 @@ export default function RevenuePage() {
     <div className="p-4 md:p-6 max-w-[1200px] mx-auto">
       <div className="mb-5">
         <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>Revenue</h1>
-        <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>MRR, ARPU and per-customer billing — June 2024</p>
+        <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>MRR, ARPU and per-customer billing â€” June 2024</p>
       </div>
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "MRR (Jun)",        value: formatUSD(totalMRR),       icon: DollarSign, color: "#185FA5", sub: `+${growth.toFixed(1)}% MoM` },
+          { label: "MRR (Jun)",        value: formatUSD(totalMRR),       icon: DollarSign, color: "#EA580C", sub: `+${growth.toFixed(1)}% MoM` },
           { label: "Active customers", value: String(activeCust),         icon: Users,      color: "#1D9E75", sub: `${customers.length} total` },
           { label: "ARPU",             value: formatUSD(arpu),            icon: TrendingUp, color: "#EF9F27", sub: "per active customer" },
           { label: "MoM growth",       value: `+${growth.toFixed(1)}%`,  icon: ArrowUpRight,color: "#D4537E", sub: "vs May 2024" },
@@ -89,7 +89,7 @@ export default function RevenuePage() {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 formatter={(val: any) => formatUSD(Number(val))}
                 contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }} />
-              <Line type="monotone" dataKey="mrr" name="MRR" stroke="#185FA5" strokeWidth={2.5} dot={{ r: 3, fill: "#185FA5" }} />
+              <Line type="monotone" dataKey="mrr" name="MRR" stroke="#EA580C" strokeWidth={2.5} dot={{ r: 3, fill: "#EA580C" }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -135,7 +135,7 @@ export default function RevenuePage() {
                 <div className="text-lg font-semibold mb-1" style={{ color: "var(--text)" }}>{formatUSD(p.mrr)}</div>
                 <div className="text-xs" style={{ color: "var(--muted)" }}>
                   {p.customers} customer{p.customers !== 1 ? "s" : ""}
-                  {plan && ` · ${plan.billingPeriod}`}
+                  {plan && ` Â· ${plan.billingPeriod}`}
                 </div>
                 <div className="mt-2 h-1.5 rounded-full" style={{ background: "var(--border)" }}>
                   <div className="h-1.5 rounded-full" style={{ width: `${pct}%`, background: p.color }} />
@@ -204,3 +204,4 @@ export default function RevenuePage() {
     </div>
   );
 }
+

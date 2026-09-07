@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import { Bell, Plus, Mail, ToggleLeft, ToggleRight } from "lucide-react";
 import { alerts as initAlerts, meters, type Alert, type AlertChannel, type AlertScope } from "@/data/mock";
@@ -10,8 +10,8 @@ const statusStyle = {
 
 const ChannelIcon = ({ ch }: { ch: AlertChannel }) => {
   if (ch === "slack")   return <span className="text-[11px] font-bold" style={{ color: "#4A154B" }}>S</span>;
-  if (ch === "email")   return <Mail size={13} style={{ color: "#185FA5" }} />;
-  if (ch === "webhook") return <span className="text-[11px] font-bold" style={{ color: "#D97706" }}>⚡</span>;
+  if (ch === "email")   return <Mail size={13} style={{ color: "#EA580C" }} />;
+  if (ch === "webhook") return <span className="text-[11px] font-bold" style={{ color: "#D97706" }}>âš¡</span>;
   return null;
 };
 
@@ -94,7 +94,7 @@ export default function AlertsPage() {
                 <select value={form.meter} onChange={(e) => setForm({ ...form, meter: e.target.value })}
                   className="w-full text-sm px-3 py-2 rounded-md border outline-none"
                   style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }}>
-                  <option value="">Select meter…</option>
+                  <option value="">Select meter...</option>
                   {meters.filter((m) => m.status === "active").map((m) => (
                     <option key={m.id} value={m.label}>{m.label}</option>
                   ))}
@@ -204,3 +204,4 @@ export default function AlertsPage() {
     </div>
   );
 }
+

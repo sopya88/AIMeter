@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Users, AlertTriangle, CheckCircle, Clock, Search, Filter, Download } from "lucide-react";
-import { licenses, departments, type LicenseStatus, type LicenseType } from "@/data/mock";
-import { formatINR, formatNumber } from "@/lib/utils";
+import { Users, AlertTriangle, CheckCircle, Clock, Search, Download } from "lucide-react";
+import { licenses, type LicenseStatus, type LicenseType } from "@/data/mock";
+import { formatINR } from "@/lib/utils";
 
 const licenseColors: Record<LicenseType, string> = {
-  "Microsoft 365 Copilot":      "#185FA5",
+  "Microsoft 365 Copilot":      "#EA580C",
   "GitHub Copilot":              "#1A1D23",
   "Claude for Work":             "#1D9E75",
   "Gemini Advanced":             "#EF9F27",
@@ -15,7 +15,7 @@ const licenseColors: Record<LicenseType, string> = {
 const statusMeta: Record<LicenseStatus, { label: string; bg: string; text: string; icon: React.ElementType }> = {
   active:   { label: "Active",   bg: "#DCFCE7", text: "#16A34A", icon: CheckCircle },
   inactive: { label: "Inactive", bg: "#F3F4F6", text: "#6B7280", icon: Clock },
-  pending:  { label: "Pending",  bg: "#EFF6FF", text: "#185FA5", icon: Clock },
+  pending:  { label: "Pending",  bg: "#FFF7ED", text: "#EA580C", icon: Clock },
   unused:   { label: "Unused",   bg: "#FEF3C7", text: "#D97706", icon: AlertTriangle },
 };
 
@@ -24,9 +24,9 @@ const ALL_TYPES: LicenseType[] = [
 ];
 
 export default function LicensesPage() {
-  const [search, setSearch]     = useState("");
+  const [search, setSearch]       = useState("");
   const [statusFilter, setStatus] = useState<LicenseStatus | "all">("all");
-  const [deptFilter, setDept]   = useState("all");
+  const [deptFilter, setDept]     = useState("all");
 
   const filtered = licenses.filter((l) => {
     const matchSearch = l.employee.toLowerCase().includes(search.toLowerCase())
@@ -42,7 +42,6 @@ export default function LicensesPage() {
   const unusedSpend     = licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0);
   const activeCount     = licenses.filter((l) => l.status === "active").length;
 
-  // per-license-type summary
   const byType = ALL_TYPES.map((type) => {
     const rows = licenses.filter((l) => l.licenseType === type);
     return {
@@ -69,7 +68,8 @@ export default function LicensesPage() {
             Employee-wise AI tool allocation · INR billing · Unused license alerts
           </p>
         </div>
-        <button className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium border"
+        <button
+          className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium border"
           style={{ borderColor: "var(--border)", color: "var(--muted)", background: "var(--surface)" }}>
           <Download size={13} />
           <span className="hidden sm:inline">Export CSV</span>
@@ -79,10 +79,10 @@ export default function LicensesPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total Monthly Spend",  value: formatINR(totalMonthlyINR), sub: `${licenses.length} licenses`,            color: "#185FA5", icon: Users },
-          { label: "Active Licenses",      value: String(activeCount),        sub: `${licenses.length} total allocated`,     color: "#1D9E75", icon: CheckCircle },
-          { label: "Unused Licenses",      value: String(unusedCount),        sub: "No activity 30+ days",                   color: "#D97706", icon: AlertTriangle },
-          { label: "Unused License Cost",  value: formatINR(unusedSpend),    sub: "Potential monthly saving",               color: "#DC2626", icon: AlertTriangle },
+          { label: "Total Monthly Spend",  value: formatINR(totalMonthlyINR), sub: `${licenses.length} licenses`,         color: "#EA580C", icon: Users },
+          { label: "Active Licenses",      value: String(activeCount),        sub: `${licenses.length} total allocated`,  color: "#1D9E75", icon: CheckCircle },
+          { label: "Unused Licenses",      value: String(unusedCount),        sub: "No activity 30+ days",                color: "#D97706", icon: AlertTriangle },
+          { label: "Unused License Cost",  value: formatINR(unusedSpend),     sub: "Potential monthly saving",            color: "#DC2626", icon: AlertTriangle },
         ].map((m) => (
           <div key={m.label} className="rounded-lg border p-3 md:p-4"
             style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
@@ -123,12 +123,13 @@ export default function LicensesPage() {
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-3">
-        <div className="flex items-center gap-1.5 flex-1 min-w-[200px] px-3 py-2 rounded-md border text-sm"
+        <div className="flex items-center gap-1.5 flex-1 min-w-[200px] px-3 py-2 rounded-md border"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <Search size={13} style={{ color: "var(--muted)" }} />
           <input
-            value={search} onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search employee, department, tool…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search employee, department, tool..."
             className="flex-1 bg-transparent outline-none text-xs"
             style={{ color: "var(--text)" }}
           />
@@ -136,16 +137,17 @@ export default function LicensesPage() {
         <div className="flex gap-1 flex-wrap">
           {(["all", "active", "unused", "inactive", "pending"] as const).map((s) => (
             <button key={s} onClick={() => setStatus(s)}
-              className="px-2.5 py-1.5 rounded-md text-xs font-medium border transition-colors capitalize"
+              className="px-2.5 py-1.5 rounded-md text-xs font-medium border capitalize"
               style={statusFilter === s
                 ? { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }
                 : { background: "var(--bg)", color: "var(--muted)", borderColor: "var(--border)" }}>
-              {s === "all" ? "All status" : s}
+              {s === "all" ? "All" : s}
             </button>
           ))}
         </div>
         <select
-          value={deptFilter} onChange={(e) => setDept(e.target.value)}
+          value={deptFilter}
+          onChange={(e) => setDept(e.target.value)}
           className="px-2.5 py-1.5 rounded-md text-xs border outline-none"
           style={{ background: "var(--surface)", borderColor: "var(--border)", color: "var(--muted)" }}>
           <option value="all">All departments</option>
@@ -161,9 +163,7 @@ export default function LicensesPage() {
           <span className="text-xs font-medium" style={{ color: "var(--muted)" }}>
             {filtered.length} of {licenses.length} licenses
           </span>
-          <span className="text-xs" style={{ color: "var(--muted)" }}>
-            Showing monthly cost in INR
-          </span>
+          <span className="text-xs" style={{ color: "var(--muted)" }}>Monthly cost in INR</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[760px]">
@@ -180,8 +180,7 @@ export default function LicensesPage() {
                 const lcolor = licenseColors[l.licenseType];
                 return (
                   <tr key={l.id}
-                    style={{ borderBottom: i < filtered.length - 1 ? "1px solid var(--border)" : "none" }}
-                    className={l.status === "unused" ? "" : ""}>
+                    style={{ borderBottom: i < filtered.length - 1 ? "1px solid var(--border)" : "none" }}>
                     <td className="px-4 py-3">
                       <div className="text-xs font-medium" style={{ color: "var(--text)" }}>{l.employee}</div>
                       <div className="text-[10px] mt-0.5" style={{ color: "var(--muted)" }}>{l.email}</div>
@@ -207,13 +206,9 @@ export default function LicensesPage() {
                       {formatINR(l.monthlySpendINR)}
                     </td>
                     <td className="px-4 py-3">
-                      {l.unusedDays > 0 ? (
-                        <span className="text-xs font-semibold" style={{ color: "#D97706" }}>
-                          {l.unusedDays}d
-                        </span>
-                      ) : (
-                        <span className="text-xs" style={{ color: "var(--muted)" }}>—</span>
-                      )}
+                      {l.unusedDays > 0
+                        ? <span className="text-xs font-semibold" style={{ color: "#D97706" }}>{l.unusedDays}d</span>
+                        : <span className="text-xs" style={{ color: "var(--muted)" }}>-</span>}
                     </td>
                   </tr>
                 );
@@ -226,17 +221,20 @@ export default function LicensesPage() {
         <div className="px-4 py-3 border-t flex flex-wrap gap-4"
           style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
           <div className="text-xs" style={{ color: "var(--muted)" }}>
-            Total (filtered): <span className="font-semibold" style={{ color: "var(--text)" }}>
+            Total (filtered):{" "}
+            <span className="font-semibold" style={{ color: "var(--text)" }}>
               {formatINR(filtered.reduce((s, l) => s + l.monthlySpendINR, 0))}/mo
             </span>
           </div>
           <div className="text-xs" style={{ color: "#D97706" }}>
-            Unused waste: <span className="font-semibold">
+            Unused waste:{" "}
+            <span className="font-semibold">
               {formatINR(filtered.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/mo
             </span>
           </div>
           <div className="text-xs" style={{ color: "var(--muted)" }}>
-            IGST (18%): <span className="font-semibold" style={{ color: "var(--text)" }}>
+            IGST (18%):{" "}
+            <span className="font-semibold" style={{ color: "var(--text)" }}>
               {formatINR(filtered.reduce((s, l) => s + l.monthlySpendINR, 0) * 0.18)}/mo
             </span>
           </div>

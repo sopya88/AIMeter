@@ -2,9 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, BarChart2, DollarSign, TrendingUp, Activity,
-  Bell, FileText, Cpu, Plug, Settings,
-  Zap, ChevronRight, Bot, Shield, ClipboardList,
+  LayoutDashboard, BarChart2, Bell,
+  Zap, Bot, Shield, ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,44 +13,27 @@ const sections: { title: string; items: NavItem[] }[] = [
   {
     title: "HOME",
     items: [
-      { label: "Dashboard",   href: "/",          icon: LayoutDashboard },
+      { label: "Dashboard", href: "/", icon: LayoutDashboard },
     ],
   },
   {
     title: "ANALYTICS",
     items: [
-      { label: "Usage",       href: "/usage",      icon: BarChart2 },
-      { label: "Cost",        href: "/cost-items", icon: DollarSign },
-      { label: "Revenue",     href: "/revenue",    icon: TrendingUp },
-      { label: "Meters",      href: "/meters",     icon: Activity },
+      { label: "Usage",  href: "/usage",  icon: BarChart2 },
+      { label: "Alerts", href: "/alerts", icon: Bell },
     ],
   },
   {
     title: "GOVERNANCE",
     items: [
-      { label: "Licenses",    href: "/licenses",   icon: Shield },
-      { label: "AI Agents",   href: "/agents",     icon: Bot },
-      { label: "Audit & GST", href: "/audit",      icon: ClipboardList },
-    ],
-  },
-  {
-    title: "SYSTEM",
-    items: [
-      { label: "Alerts",       href: "/alerts",       icon: Bell },
-      { label: "Logs",         href: "/logs",         icon: FileText },
-      { label: "Jobs",         href: "/jobs",         icon: Cpu },
-      { label: "Integrations", href: "/integrations", icon: Plug },
-      { label: "Settings",     href: "/settings",     icon: Settings },
+      { label: "Licenses",    href: "/licenses", icon: Shield },
+      { label: "AI Agents",   href: "/agents",   icon: Bot },
+      { label: "Audit & GST", href: "/audit",    icon: ClipboardList },
     ],
   },
 ];
 
-// Routes that are built (vs greyed-out placeholders)
-const BUILT = new Set([
-  "/", "/usage", "/revenue", "/meters", "/cost-items",
-  "/alerts",
-  "/licenses", "/agents", "/audit",
-]);
+const BUILT = new Set(["/", "/usage", "/alerts", "/licenses", "/agents", "/audit"]);
 
 export default function Sidebar() {
   const path = usePathname();
@@ -64,15 +46,18 @@ export default function Sidebar() {
         style={{ background: "var(--surface)", borderColor: "var(--border)" }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2 px-4 py-4 border-b" style={{ borderColor: "var(--border)" }}>
+        <div className="flex items-center gap-2.5 px-4 py-4 border-b" style={{ borderColor: "var(--border)" }}>
           <div className="w-7 h-7 rounded-md flex items-center justify-center" style={{ background: "var(--accent)" }}>
             <Zap size={13} color="#fff" fill="#fff" />
           </div>
-          <span className="font-semibold text-sm tracking-tight" style={{ color: "var(--text)" }}>AIMeter</span>
+          <div>
+            <div className="font-bold text-sm tracking-tight" style={{ color: "var(--text)" }}>AIMeter</div>
+            <div className="text-[10px]" style={{ color: "var(--muted)" }}>AI Governance</div>
+          </div>
         </div>
 
-        {/* Nav sections */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-4 scrollbar-thin">
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto py-3 px-2 flex flex-col gap-5 scrollbar-thin">
           {sections.map((section) => (
             <div key={section.title}>
               <div className="px-2 mb-1 text-[10px] font-semibold tracking-widest"
@@ -81,23 +66,20 @@ export default function Sidebar() {
               </div>
               {section.items.map(({ label, href, icon: Icon }) => {
                 const active = path === href;
-                const built  = BUILT.has(href);
                 return (
                   <Link
                     key={href}
-                    href={built ? href : "#"}
-                    onClick={(e) => !built && e.preventDefault()}
+                    href={href}
                     className={cn(
-                      "flex items-center justify-between px-2 py-2 rounded-md text-[13px] font-medium transition-colors",
-                      active ? "" : built ? "hover:bg-gray-50" : "opacity-40 cursor-default"
+                      "flex items-center gap-2.5 px-2 py-2 rounded-md text-[13px] font-medium transition-colors",
+                      active ? "" : "hover:bg-orange-50"
                     )}
-                    style={active ? { background: "var(--accent)", color: "#fff" } : { color: "var(--muted)" }}
+                    style={active
+                      ? { background: "var(--accent)", color: "#fff" }
+                      : { color: "var(--muted)" }}
                   >
-                    <span className="flex items-center gap-2.5">
-                      <Icon size={14} />
-                      {label}
-                    </span>
-                    {!built && <ChevronRight size={11} />}
+                    <Icon size={14} />
+                    {label}
                   </Link>
                 );
               })}
@@ -105,11 +87,16 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="px-4 py-3 border-t text-xs" style={{ borderColor: "var(--border)", color: "var(--muted)" }}>
-          <div className="font-medium text-[11px]" style={{ color: "var(--text)" }}>TechCorp India Pvt. Ltd.</div>
-          <div className="text-[10px] mt-0.5">GSTIN: 27AABCU9603R1ZN</div>
-          <div className="text-[10px] mt-0.5">API key: sk-am-••••••••</div>
+        {/* Footer — neutral, no fake data */}
+        <div className="px-4 py-3 border-t" style={{ borderColor: "var(--border)" }}>
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+              style={{ background: "var(--accent)" }}>IN</div>
+            <div>
+              <div className="text-[11px] font-medium" style={{ color: "var(--text)" }}>India Workspace</div>
+              <div className="text-[10px]" style={{ color: "var(--muted)" }}>INR · IGST 18%</div>
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -121,7 +108,7 @@ export default function Sidebar() {
         <div className="w-6 h-6 rounded flex items-center justify-center" style={{ background: "var(--accent)" }}>
           <Zap size={11} color="#fff" fill="#fff" />
         </div>
-        <span className="font-semibold text-sm" style={{ color: "var(--text)" }}>AIMeter</span>
+        <span className="font-bold text-sm" style={{ color: "var(--text)" }}>AIMeter</span>
       </div>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────── */}
@@ -130,8 +117,8 @@ export default function Sidebar() {
         style={{ background: "var(--surface)", borderColor: "var(--border)" }}
       >
         {[
-          { label: "Home",      href: "/",          icon: LayoutDashboard },
-          { label: "Usage",     href: "/usage",     icon: BarChart2 },
+          { label: "Home",     href: "/",         icon: LayoutDashboard },
+          { label: "Usage",    href: "/usage",    icon: BarChart2 },
           { label: "Licenses", href: "/licenses", icon: Shield },
           { label: "Agents",   href: "/agents",   icon: Bot },
           { label: "Audit",    href: "/audit",    icon: ClipboardList },

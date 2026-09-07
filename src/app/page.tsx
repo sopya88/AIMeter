@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useState } from "react";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -20,7 +20,7 @@ const GROUP_OPTS: { value: GroupBy; label: string }[] = [
 ];
 
 const metrics = [
-  { label: "Total Input Tokens",  value: formatTokens(summaryMetrics.totalInputTokens),  icon: Cpu,       color: "#185FA5" },
+  { label: "Total Input Tokens",  value: formatTokens(summaryMetrics.totalInputTokens),  icon: Cpu,       color: "#EA580C" },
   { label: "Total Output Tokens", value: formatTokens(summaryMetrics.totalOutputTokens), icon: Cpu,       color: "#1D9E75" },
   { label: "Total Cost",          value: formatUSD(summaryMetrics.totalCost),             icon: DollarSign,color: "#EF9F27" },
   { label: "API Requests",        value: formatNumber(summaryMetrics.totalRequests),      icon: PhoneCall, color: "#D4537E" },
@@ -113,7 +113,7 @@ export default function Dashboard() {
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm font-medium" style={{ color: "var(--text)" }}>Dept. AI Spend (₹)</div>
-            <a href="/audit" className="text-xs" style={{ color: "var(--accent)" }}>View audit →</a>
+            <a href="/audit" className="text-xs" style={{ color: "var(--accent)" }}>View audit â†’</a>
           </div>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={departments.map((d) => ({ name: d.name.split(" ")[0], spent: d.spentINR, budget: d.budgetINR }))} barSize={14} barGap={2}>
@@ -134,11 +134,11 @@ export default function Dashboard() {
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm font-medium" style={{ color: "var(--text)" }}>License Governance</div>
-            <a href="/licenses" className="text-xs" style={{ color: "var(--accent)" }}>Manage →</a>
+            <a href="/licenses" className="text-xs" style={{ color: "var(--accent)" }}>Manage â†’</a>
           </div>
           <div className="grid grid-cols-2 gap-3 mb-3">
             {[
-              { label: "Total Licenses",  value: String(licenses.length),                                            color: "#185FA5", icon: Shield },
+              { label: "Total Licenses",  value: String(licenses.length),                                            color: "#EA580C", icon: Shield },
               { label: "Unused",          value: String(licenses.filter((l) => l.status === "unused").length),       color: "#D97706", icon: AlertTriangle },
               { label: "Monthly Spend",   value: formatINR(licenses.reduce((s, l) => s + l.monthlySpendINR, 0)),     color: "#1D9E75", icon: Users },
               { label: "Wasted/month",    value: formatINR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0)), color: "#DC2626", icon: AlertTriangle },
@@ -155,7 +155,7 @@ export default function Dashboard() {
           </div>
           <div className="text-[10px] px-2 py-1.5 rounded"
             style={{ background: "#FEF3C7", color: "#D97706" }}>
-            ⚠ {licenses.filter((l) => l.status === "unused").length} unused licenses costing{" "}
+            âš  {licenses.filter((l) => l.status === "unused").length} unused licenses costing{" "}
             {formatINR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/month.{" "}
             <a href="/licenses" className="font-semibold underline">Review now</a>
           </div>
@@ -206,3 +206,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
