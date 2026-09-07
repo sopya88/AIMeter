@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, BarChart2, DollarSign, TrendingUp, Activity,
-  Users, Tag, GitBranch, Bell, FileText, Cpu, Plug, Settings,
+  Tag, GitBranch, Bell, FileText, Cpu, Plug, Settings,
   Zap, ChevronRight, Bot, Shield, ClipboardList,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,7 +24,6 @@ const sections: { title: string; items: NavItem[] }[] = [
       { label: "Cost",        href: "/cost-items", icon: DollarSign },
       { label: "Revenue",     href: "/revenue",    icon: TrendingUp },
       { label: "Meters",      href: "/meters",     icon: Activity },
-      { label: "Customers",   href: "/customers",  icon: Users },
       { label: "Pricing",     href: "/pricing",    icon: Tag },
       { label: "Commitments", href: "/commitments",icon: GitBranch },
     ],
@@ -52,7 +51,7 @@ const sections: { title: string; items: NavItem[] }[] = [
 // Routes that are built (vs greyed-out placeholders)
 const BUILT = new Set([
   "/", "/usage", "/revenue", "/meters", "/cost-items", "/pricing",
-  "/commitments", "/alerts", "/customers",
+  "/commitments", "/alerts",
   "/licenses", "/agents", "/audit",
 ]);
 
