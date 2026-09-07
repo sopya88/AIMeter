@@ -87,17 +87,6 @@ export default function Sidebar() {
           ))}
         </nav>
 
-        {/* Footer — neutral, no fake data */}
-        <div className="px-4 py-3 border-t" style={{ borderColor: "var(--border)" }}>
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-              style={{ background: "var(--accent)" }}>IN</div>
-            <div>
-              <div className="text-[11px] font-medium" style={{ color: "var(--text)" }}>India Workspace</div>
-              <div className="text-[10px]" style={{ color: "var(--muted)" }}>INR · IGST 18%</div>
-            </div>
-          </div>
-        </div>
       </aside>
 
       {/* ── Mobile top bar ─────────────────────────────────────────── */}
