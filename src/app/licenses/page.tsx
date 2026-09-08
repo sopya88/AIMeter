@@ -75,10 +75,12 @@ export default function LicensesPage() {
   const [deptFilter, setDept]     = useState("all");
   const [showAdd, setShowAdd]     = useState(false);
   const [showPricing, setShowPricing] = useState(false);
+  const [editPricing, setEditPricing] = useState(false);
+  const [pricingState, setPricingState] = useState(TOOL_PRICING.map((t) => ({ ...t })));
   const [form, setForm]           = useState(blankForm);
   const [formError, setFormError] = useState("");
 
-  const pricing = TOOL_PRICING.find((t) => t.type === form.licenseType)!;
+  const pricing = pricingState.find((t) => t.type === form.licenseType)!;
 
   const filtered = rows.filter((l) => {
     const matchSearch = l.employee.toLowerCase().includes(search.toLowerCase())
@@ -94,7 +96,7 @@ export default function LicensesPage() {
   const unusedSpend     = rows.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0);
   const activeCount     = rows.filter((l) => l.status === "active").length;
 
-  const byType = TOOL_PRICING.map((t) => {
+  const byType = pricingState.map((t) => {
     const typeRows = rows.filter((l) => l.licenseType === t.type);
     return {
       ...t,
@@ -167,11 +169,21 @@ export default function LicensesPage() {
           <div className="flex items-center justify-between px-4 py-3 border-b"
             style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
             <div className="text-sm font-semibold" style={{ color: "var(--text)" }}>AI Tool Pricing Reference</div>
-            <div className="text-xs" style={{ color: "var(--muted)" }}>Per seat · per month · INR at ~84/USD + 18% IGST</div>
+            <div className="flex items-center gap-3">
+              <div className="text-xs hidden sm:block" style={{ color: "var(--muted)" }}>Per seat · per month · INR + 18% IGST</div>
+              <button
+                onClick={() => setEditPricing((v) => !v)}
+                className="text-xs px-2.5 py-1 rounded-md border font-medium"
+                style={editPricing
+                  ? { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }
+                  : { background: "var(--bg)", color: "var(--muted)", borderColor: "var(--border)" }}>
+                {editPricing ? "Done" : "Edit Rates"}
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-0 divide-x divide-y"
             style={{ borderColor: "var(--border)" }}>
-            {TOOL_PRICING.map((t) => (
+            {pricingState.map((t, idx) => (
               <div key={t.type} className="p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: t.color }} />
@@ -179,13 +191,33 @@ export default function LicensesPage() {
                 </div>
                 <div className="text-[10px] mb-2 px-1.5 py-0.5 rounded w-fit"
                   style={{ background: t.color + "14", color: t.color }}>{t.tier}</div>
-                <div className="mb-1">
-                  <span className="text-lg font-bold" style={{ color: "var(--text)" }}>{formatINR(t.inrPerSeat)}</span>
-                  <span className="text-[10px] ml-1" style={{ color: "var(--muted)" }}>/seat/mo</span>
-                </div>
-                <div className="text-[10px] mb-2" style={{ color: "var(--muted)" }}>
-                  ${t.usdPerSeat}/seat · +{formatINR(t.inrPerSeat * 0.18)} IGST
-                </div>
+                {editPricing ? (
+                  <div className="mb-2">
+                    <label className="text-[10px] block mb-1" style={{ color: "var(--muted)" }}>INR/seat/month</label>
+                    <input
+                      type="number" min={0}
+                      value={t.inrPerSeat}
+                      onChange={(e) => setPricingState((prev) => prev.map((p, i) =>
+                        i === idx ? { ...p, inrPerSeat: Number(e.target.value) } : p
+                      ))}
+                      className="w-full text-sm px-2 py-1 rounded border outline-none font-semibold"
+                      style={{ borderColor: t.color, color: "var(--text)", background: "var(--bg)" }}
+                    />
+                    <div className="text-[10px] mt-1" style={{ color: "var(--muted)" }}>
+                      IGST: {formatINR(t.inrPerSeat * 0.18)} · Total: {formatINR(t.inrPerSeat * 1.18)}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="mb-1">
+                      <span className="text-lg font-bold" style={{ color: "var(--text)" }}>{formatINR(t.inrPerSeat)}</span>
+                      <span className="text-[10px] ml-1" style={{ color: "var(--muted)" }}>/seat/mo</span>
+                    </div>
+                    <div className="text-[10px] mb-2" style={{ color: "var(--muted)" }}>
+                      +{formatINR(t.inrPerSeat * 0.18)} IGST
+                    </div>
+                  </>
+                )}
                 <div className="flex flex-col gap-0.5">
                   {t.includes.map((item) => (
                     <div key={item} className="flex items-start gap-1 text-[10px]" style={{ color: "var(--muted)" }}>
@@ -198,7 +230,7 @@ export default function LicensesPage() {
           </div>
           <div className="px-4 py-2 border-t text-[10px]"
             style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--muted)" }}>
-            Note: Prices are indicative. Enterprise contracts may vary. All amounts exclude TDS (2% deductible at source for software services).
+            Note: Rates are editable — changes apply to new license allocations. All amounts exclude TDS (2% deductible at source for software services).
           </div>
         </div>
       )}
@@ -235,7 +267,7 @@ export default function LicensesPage() {
                   AI Tool / License Type
                 </label>
                 <div className="grid grid-cols-1 gap-2">
-                  {TOOL_PRICING.map((t) => (
+                  {pricingState.map((t) => (
                     <label key={t.type}
                       className="flex items-center justify-between px-3 py-2.5 rounded-lg border cursor-pointer transition-colors"
                       style={{

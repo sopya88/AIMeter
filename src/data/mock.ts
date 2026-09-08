@@ -159,7 +159,7 @@ export const pricingPlans: PricingPlan[] = [
 ];
 
 // ── Alerts ────────────────────────────────────────────────────────────────────
-export type AlertScope   = "each_customer" | "all_customers" | "specific_customer";
+export type AlertScope   = "each_employee" | "department" | "all";
 export type AlertStatus  = "enabled" | "disabled";
 export type AlertChannel = "slack" | "email" | "webhook";
 
@@ -170,11 +170,11 @@ export interface Alert {
 }
 
 export const alerts: Alert[] = [
-  { id: "a1", name: "High token usage",     alertOn: "usage", meter: "Input Tokens",     rule: "> 1,000,000", scope: "each_customer", sendTo: ["slack","email"], status: "enabled",  modified: "2024-06-10" },
-  { id: "a2", name: "Cost spike",           alertOn: "cost",  meter: "Input Tokens",     rule: "> $500",      scope: "each_customer", sendTo: ["email"],        status: "enabled",  modified: "2024-06-08" },
-  { id: "a3", name: "Output token anomaly", alertOn: "usage", meter: "Output Tokens",    rule: "> 500,000",   scope: "each_customer", sendTo: ["webhook"],      status: "enabled",  modified: "2024-06-05" },
-  { id: "a4", name: "Total spend guard",    alertOn: "cost",  meter: "API Requests",     rule: "> $1,000",    scope: "all_customers", sendTo: ["email"],        status: "disabled", modified: "2024-05-28" },
-  { id: "a5", name: "Fine-tune budget",     alertOn: "cost",  meter: "Fine-tune Tokens", rule: "> $200",      scope: "each_customer", sendTo: ["slack"],        status: "disabled", modified: "2024-05-20" },
+  { id: "a1", name: "High token usage",     alertOn: "usage", meter: "Input Tokens",     rule: "> 1,000,000", scope: "each_employee", sendTo: ["slack","email"], status: "enabled",  modified: "2024-06-10" },
+  { id: "a2", name: "Cost spike",           alertOn: "cost",  meter: "Input Tokens",     rule: "> 5,000",     scope: "each_employee", sendTo: ["email"],        status: "enabled",  modified: "2024-06-08" },
+  { id: "a3", name: "Output token anomaly", alertOn: "usage", meter: "Output Tokens",    rule: "> 500,000",   scope: "each_employee", sendTo: ["webhook"],      status: "enabled",  modified: "2024-06-05" },
+  { id: "a4", name: "Dept spend guard",     alertOn: "cost",  meter: "API Requests",     rule: "> 50,000",    scope: "department",    sendTo: ["email"],        status: "disabled", modified: "2024-05-28" },
+  { id: "a5", name: "Global budget cap",    alertOn: "cost",  meter: "Fine-tune Tokens", rule: "> 2,00,000",  scope: "all",           sendTo: ["slack"],        status: "disabled", modified: "2024-05-20" },
 ];
 
 // ── Dashboard time-series ─────────────────────────────────────────────────────

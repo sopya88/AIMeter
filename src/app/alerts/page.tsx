@@ -11,17 +11,17 @@ const statusStyle = {
 const ChannelIcon = ({ ch }: { ch: AlertChannel }) => {
   if (ch === "slack")   return <span className="text-[11px] font-bold" style={{ color: "#4A154B" }}>S</span>;
   if (ch === "email")   return <Mail size={13} style={{ color: "#EA580C" }} />;
-  if (ch === "webhook") return <span className="text-[11px] font-bold" style={{ color: "#D97706" }}>âš¡</span>;
+  if (ch === "webhook") return <span className="text-[11px] font-bold" style={{ color: "#D97706" }}>wh</span>;
   return null;
 };
 
 const scopeLabel: Record<AlertScope, string> = {
-  each_customer:     "Each customer",
-  all_customers:     "All customers",
-  specific_customer: "Specific customer",
+  each_employee: "Each employee",
+  department:    "Department",
+  all:           "All users",
 };
 
-const defaultForm = { name: "", alertOn: "usage", meter: "", rule: "", scope: "each_customer" as AlertScope, sendTo: [] as AlertChannel[] };
+const defaultForm = { name: "", alertOn: "usage", meter: "", rule: "", scope: "each_employee" as AlertScope, sendTo: [] as AlertChannel[] };
 
 export default function AlertsPage() {
   const [rows, setRows]     = useState<Alert[]>(initAlerts);
@@ -112,8 +112,9 @@ export default function AlertsPage() {
                 <select value={form.scope} onChange={(e) => setForm({ ...form, scope: e.target.value as AlertScope })}
                   className="w-full text-sm px-3 py-2 rounded-md border outline-none"
                   style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--text)" }}>
-                  <option value="each_customer">Each customer</option>
-                  <option value="all_customers">All customers</option>
+                  <option value="each_employee">Each employee</option>
+                  <option value="department">Department</option>
+                  <option value="all">All users</option>
                 </select>
               </div>
               <div>

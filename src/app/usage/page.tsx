@@ -4,14 +4,13 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip,
   ResponsiveContainer, Legend, PieChart, Pie, Cell,
 } from "recharts";
-import { dailyUsage, providerColors, providerBreakdown, customers, ingestEvents } from "@/data/mock";
+import { dailyUsage, providerColors, providerBreakdown, ingestEvents } from "@/data/mock";
 import { formatTokens, formatNumber } from "@/lib/utils";
 
-type GroupByKey = "provider" | "customer" | "model";
+type GroupByKey = "provider" | "model";
 
 const GROUP_OPTIONS: { value: GroupByKey; label: string }[] = [
   { value: "provider", label: "Provider" },
-  { value: "customer", label: "Customer" },
   { value: "model",    label: "Model" },
 ];
 
@@ -27,13 +26,6 @@ const modelRows = Object.entries(modelAgg).map(([model, v]) => ({ model, ...v })
 
 const modelColors = ["#378ADD","#1D9E75","#EF9F27","#D4537E","#6B7280","#A78BFA"];
 
-// customer-level chart data
-const customerChartData = customers.map((c) => ({
-  name: c.name.split(" ")[0],
-  input:  c.inputTokens,
-  output: c.outputTokens,
-}));
-
 export default function UsagePage() {
   const [groupBy, setGroupBy] = useState<GroupByKey>("provider");
   const chartData = dailyUsage.filter((_, i) => i % 2 === 0);
@@ -42,7 +34,7 @@ export default function UsagePage() {
     <div className="p-4 md:p-6 max-w-[1200px] mx-auto">
       <div className="mb-5">
         <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>Usage</h1>
-        <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>Token consumption across providers, customers & models</p>
+        <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>Token consumption across providers & models</p>
       </div>
 
       {/* Summary cards */}
@@ -51,7 +43,7 @@ export default function UsagePage() {
           { label: "Total Input Tokens",  value: formatTokens(providerBreakdown.reduce((s, p) => s + p.inputTokens, 0)) },
           { label: "Total Output Tokens", value: formatTokens(providerBreakdown.reduce((s, p) => s + p.outputTokens, 0)) },
           { label: "Total Requests",      value: formatNumber(providerBreakdown.reduce((s, p) => s + p.requests, 0)) },
-          { label: "Active Customers",    value: String(customers.filter((c) => c.status === "active").length) },
+          { label: "Active Providers",   value: String(providerBreakdown.length) },
         ].map((m) => (
           <div key={m.label} className="rounded-lg border p-3 md:p-4"
             style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
@@ -97,22 +89,6 @@ export default function UsagePage() {
                   stroke={color} strokeWidth={2} dot={false} />
               ))}
             </LineChart>
-          </ResponsiveContainer>
-        )}
-
-        {groupBy === "customer" && (
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={customerChartData} barSize={20}>
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => formatTokens(v)} tick={{ fontSize: 10, fill: "#6B7280" }} axisLine={false} tickLine={false} width={40} />
-              <Tooltip
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                formatter={(val: any) => formatTokens(Number(val))}
-                contentStyle={{ fontSize: 12, borderRadius: 6, border: "1px solid var(--border)" }} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="input"  name="Input Tokens"  fill="#378ADD" radius={[3, 3, 0, 0]} stackId="a" />
-              <Bar dataKey="output" name="Output Tokens" fill="#1D9E75" radius={[3, 3, 0, 0]} stackId="a" />
-            </BarChart>
           </ResponsiveContainer>
         )}
 
