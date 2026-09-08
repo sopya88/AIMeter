@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, BarChart2, Bell,
-  Zap, Bot, Shield, ClipboardList,
+  Zap, Bot, Shield, ClipboardList, Plug,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,9 +31,15 @@ const sections: { title: string; items: NavItem[] }[] = [
       { label: "Audit & GST", href: "/audit",    icon: ClipboardList },
     ],
   },
+  {
+    title: "SETTINGS",
+    items: [
+      { label: "Integrations", href: "/integrations", icon: Plug },
+    ],
+  },
 ];
 
-const BUILT = new Set(["/", "/usage", "/alerts", "/licenses", "/agents", "/audit"]);
+const BUILT = new Set(["/", "/usage", "/alerts", "/licenses", "/agents", "/audit", "/integrations"]);
 
 export default function Sidebar() {
   const path = usePathname();
