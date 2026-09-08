@@ -221,12 +221,12 @@ export interface Department {
 }
 
 export const departments: Department[] = [
-  { id: "d1", name: "Engineering",       manager: "Arjun Sharma",   costCenter: "CC-ENG-001", budgetINR: 500000, spentINR: 382400, employees: 42, activeAgents: 8,  topModel: "GPT-4o" },
-  { id: "d2", name: "Product & Design",  manager: "Priya Mehta",    costCenter: "CC-PRD-002", budgetINR: 200000, spentINR: 178200, employees: 18, activeAgents: 3,  topModel: "Claude 3.5" },
-  { id: "d3", name: "Data Science",      manager: "Rahul Gupta",    costCenter: "CC-DS-003",  budgetINR: 350000, spentINR: 341000, employees: 24, activeAgents: 12, topModel: "Gemini 1.5 Pro" },
-  { id: "d4", name: "Sales & Marketing", manager: "Anjali Singh",   costCenter: "CC-SAL-004", budgetINR: 150000, spentINR: 62300,  employees: 31, activeAgents: 2,  topModel: "GPT-4o-mini" },
-  { id: "d5", name: "Finance & Legal",   manager: "Vikram Nair",    costCenter: "CC-FIN-005", budgetINR: 100000, spentINR: 38900,  employees: 15, activeAgents: 1,  topModel: "Claude 3.5" },
-  { id: "d6", name: "Customer Success",  manager: "Sneha Patil",    costCenter: "CC-CS-006",  budgetINR: 80000,  spentINR: 44800,  employees: 22, activeAgents: 5,  topModel: "GPT-4o-mini" },
+  { id: "d1", name: "Engineering",       manager: "Arjun Sharma",   costCenter: "CC-ENG-001", budgetINR: 5500,  spentINR: 4250,  employees: 42, activeAgents: 8,  topModel: "GPT-4o" },
+  { id: "d2", name: "Product & Design",  manager: "Priya Mehta",    costCenter: "CC-PRD-002", budgetINR: 2200,  spentINR: 1980,  employees: 18, activeAgents: 3,  topModel: "Claude 3.5" },
+  { id: "d3", name: "Data Science",      manager: "Rahul Gupta",    costCenter: "CC-DS-003",  budgetINR: 3900,  spentINR: 3790,  employees: 24, activeAgents: 12, topModel: "Gemini 1.5 Pro" },
+  { id: "d4", name: "Sales & Marketing", manager: "Anjali Singh",   costCenter: "CC-SAL-004", budgetINR: 1700,  spentINR: 690,   employees: 31, activeAgents: 2,  topModel: "GPT-4o-mini" },
+  { id: "d5", name: "Finance & Legal",   manager: "Vikram Nair",    costCenter: "CC-FIN-005", budgetINR: 1100,  spentINR: 430,   employees: 15, activeAgents: 1,  topModel: "Claude 3.5" },
+  { id: "d6", name: "Customer Success",  manager: "Sneha Patil",    costCenter: "CC-CS-006",  budgetINR: 900,   spentINR: 500,   employees: 22, activeAgents: 5,  topModel: "GPT-4o-mini" },
 ];
 
 export type LicenseStatus = "active" | "inactive" | "pending" | "unused";
@@ -247,20 +247,20 @@ export interface License {
 }
 
 export const licenses: License[] = [
-  { id: "l1",  employee: "Arjun Sharma",    email: "arjun.sharma@corp.in",    department: "Engineering",       role: "Engineering Manager",   licenseType: "GitHub Copilot",             status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 1758,  allocatedDate: "2024-01-01", unusedDays: 0  },
-  { id: "l2",  employee: "Riya Desai",      email: "riya.desai@corp.in",      department: "Engineering",       role: "Senior SDE",            licenseType: "GitHub Copilot",             status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 1758,  allocatedDate: "2024-01-01", unusedDays: 0  },
-  { id: "l3",  employee: "Karan Joshi",     email: "karan.joshi@corp.in",     department: "Engineering",       role: "SDE",                   licenseType: "GitHub Copilot",             status: "unused",   lastUsed: "2024-04-22", monthlySpendINR: 1758,  allocatedDate: "2024-02-01", unusedDays: 53 },
-  { id: "l4",  employee: "Priya Mehta",     email: "priya.mehta@corp.in",     department: "Product & Design",  role: "Product Manager",       licenseType: "Microsoft 365 Copilot",     status: "active",   lastUsed: "2024-06-13", monthlySpendINR: 2508,  allocatedDate: "2024-01-15", unusedDays: 0  },
-  { id: "l5",  employee: "Neha Kulkarni",   email: "neha.kulkarni@corp.in",   department: "Product & Design",  role: "UX Designer",           licenseType: "Claude for Work",           status: "active",   lastUsed: "2024-06-12", monthlySpendINR: 1675,  allocatedDate: "2024-03-01", unusedDays: 0  },
-  { id: "l6",  employee: "Rahul Gupta",     email: "rahul.gupta@corp.in",     department: "Data Science",      role: "Head of Data Science",  licenseType: "Gemini Advanced",           status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 1758,  allocatedDate: "2024-01-01", unusedDays: 0  },
-  { id: "l7",  employee: "Suresh Kumar",    email: "suresh.kumar@corp.in",    department: "Data Science",      role: "Data Scientist",        licenseType: "OpenAI ChatGPT Enterprise", status: "active",   lastUsed: "2024-06-11", monthlySpendINR: 2090,  allocatedDate: "2024-02-15", unusedDays: 0  },
-  { id: "l8",  employee: "Meena Iyer",      email: "meena.iyer@corp.in",      department: "Data Science",      role: "ML Engineer",           licenseType: "GitHub Copilot",             status: "unused",   lastUsed: "2024-05-01", monthlySpendINR: 1758,  allocatedDate: "2024-02-01", unusedDays: 44 },
-  { id: "l9",  employee: "Anjali Singh",    email: "anjali.singh@corp.in",    department: "Sales & Marketing", role: "VP Sales",              licenseType: "Microsoft 365 Copilot",     status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 2508,  allocatedDate: "2024-01-01", unusedDays: 0  },
-  { id: "l10", employee: "Rohit Verma",     email: "rohit.verma@corp.in",     department: "Sales & Marketing", role: "Sales Executive",       licenseType: "Microsoft 365 Copilot",     status: "inactive", lastUsed: "2024-03-10", monthlySpendINR: 2508,  allocatedDate: "2024-01-15", unusedDays: 96 },
-  { id: "l11", employee: "Vikram Nair",     email: "vikram.nair@corp.in",     department: "Finance & Legal",   role: "CFO",                   licenseType: "Claude for Work",           status: "active",   lastUsed: "2024-06-13", monthlySpendINR: 1675,  allocatedDate: "2024-03-01", unusedDays: 0  },
-  { id: "l12", employee: "Sneha Patil",     email: "sneha.patil@corp.in",     department: "Customer Success",  role: "CS Manager",            licenseType: "OpenAI ChatGPT Enterprise", status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 2090,  allocatedDate: "2024-01-01", unusedDays: 0  },
-  { id: "l13", employee: "Aditya Rao",      email: "aditya.rao@corp.in",      department: "Engineering",       role: "DevOps Engineer",       licenseType: "GitHub Copilot",             status: "pending",  lastUsed: null,          monthlySpendINR: 1758,  allocatedDate: "2024-06-10", unusedDays: 0  },
-  { id: "l14", employee: "Divya Krishnan",  email: "divya.krishnan@corp.in",  department: "Data Science",      role: "Data Analyst",          licenseType: "Gemini Advanced",           status: "unused",   lastUsed: "2024-04-30", monthlySpendINR: 1758,  allocatedDate: "2024-02-01", unusedDays: 45 },
+  { id: "l1",  employee: "Arjun Sharma",    email: "arjun.sharma@corp.in",    department: "Engineering",       role: "Engineering Manager",   licenseType: "GitHub Copilot",             status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 19,  allocatedDate: "2024-01-01", unusedDays: 0  },
+  { id: "l2",  employee: "Riya Desai",      email: "riya.desai@corp.in",      department: "Engineering",       role: "Senior SDE",            licenseType: "GitHub Copilot",             status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 19,  allocatedDate: "2024-01-01", unusedDays: 0  },
+  { id: "l3",  employee: "Karan Joshi",     email: "karan.joshi@corp.in",     department: "Engineering",       role: "SDE",                   licenseType: "GitHub Copilot",             status: "unused",   lastUsed: "2024-04-22", monthlySpendINR: 19,  allocatedDate: "2024-02-01", unusedDays: 53 },
+  { id: "l4",  employee: "Priya Mehta",     email: "priya.mehta@corp.in",     department: "Product & Design",  role: "Product Manager",       licenseType: "Microsoft 365 Copilot",     status: "active",   lastUsed: "2024-06-13", monthlySpendINR: 28,  allocatedDate: "2024-01-15", unusedDays: 0  },
+  { id: "l5",  employee: "Neha Kulkarni",   email: "neha.kulkarni@corp.in",   department: "Product & Design",  role: "UX Designer",           licenseType: "Claude for Work",           status: "active",   lastUsed: "2024-06-12", monthlySpendINR: 19,  allocatedDate: "2024-03-01", unusedDays: 0  },
+  { id: "l6",  employee: "Rahul Gupta",     email: "rahul.gupta@corp.in",     department: "Data Science",      role: "Head of Data Science",  licenseType: "Gemini Advanced",           status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 19,  allocatedDate: "2024-01-01", unusedDays: 0  },
+  { id: "l7",  employee: "Suresh Kumar",    email: "suresh.kumar@corp.in",    department: "Data Science",      role: "Data Scientist",        licenseType: "OpenAI ChatGPT Enterprise", status: "active",   lastUsed: "2024-06-11", monthlySpendINR: 23,  allocatedDate: "2024-02-15", unusedDays: 0  },
+  { id: "l8",  employee: "Meena Iyer",      email: "meena.iyer@corp.in",      department: "Data Science",      role: "ML Engineer",           licenseType: "GitHub Copilot",             status: "unused",   lastUsed: "2024-05-01", monthlySpendINR: 19,  allocatedDate: "2024-02-01", unusedDays: 44 },
+  { id: "l9",  employee: "Anjali Singh",    email: "anjali.singh@corp.in",    department: "Sales & Marketing", role: "VP Sales",              licenseType: "Microsoft 365 Copilot",     status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 28,  allocatedDate: "2024-01-01", unusedDays: 0  },
+  { id: "l10", employee: "Rohit Verma",     email: "rohit.verma@corp.in",     department: "Sales & Marketing", role: "Sales Executive",       licenseType: "Microsoft 365 Copilot",     status: "inactive", lastUsed: "2024-03-10", monthlySpendINR: 28,  allocatedDate: "2024-01-15", unusedDays: 96 },
+  { id: "l11", employee: "Vikram Nair",     email: "vikram.nair@corp.in",     department: "Finance & Legal",   role: "CFO",                   licenseType: "Claude for Work",           status: "active",   lastUsed: "2024-06-13", monthlySpendINR: 19,  allocatedDate: "2024-03-01", unusedDays: 0  },
+  { id: "l12", employee: "Sneha Patil",     email: "sneha.patil@corp.in",     department: "Customer Success",  role: "CS Manager",            licenseType: "OpenAI ChatGPT Enterprise", status: "active",   lastUsed: "2024-06-14", monthlySpendINR: 23,  allocatedDate: "2024-01-01", unusedDays: 0  },
+  { id: "l13", employee: "Aditya Rao",      email: "aditya.rao@corp.in",      department: "Engineering",       role: "DevOps Engineer",       licenseType: "GitHub Copilot",             status: "pending",  lastUsed: null,          monthlySpendINR: 19,  allocatedDate: "2024-06-10", unusedDays: 0  },
+  { id: "l14", employee: "Divya Krishnan",  email: "divya.krishnan@corp.in",  department: "Data Science",      role: "Data Analyst",          licenseType: "Gemini Advanced",           status: "unused",   lastUsed: "2024-04-30", monthlySpendINR: 19,  allocatedDate: "2024-02-01", unusedDays: 45 },
 ];
 
 export type AgentStatus = "running" | "paused" | "error" | "scheduled";
@@ -284,18 +284,18 @@ export interface Agent {
 }
 
 export const agents: Agent[] = [
-  { id: "ag1",  name: "Code Review Bot",        type: "Code Assistant",    owner: "Arjun Sharma",   department: "Engineering",       model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 8420,  tokensUsed: 18200000, costINR: 124800, status: "running",   createdDate: "2024-01-15", lastRun: "2024-06-14", description: "Automated PR review and code quality checks on GitHub" },
-  { id: "ag2",  name: "SQL Generator",           type: "Data Pipeline",     owner: "Rahul Gupta",    department: "Data Science",      model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 5200,  tokensUsed: 9800000,  costINR: 68200,  status: "running",   createdDate: "2024-02-01", lastRun: "2024-06-14", description: "Generates and validates SQL queries from natural language" },
-  { id: "ag3",  name: "Customer Reply Agent",    type: "Customer Support",  owner: "Sneha Patil",    department: "Customer Success",  model: "claude-3-5-sonnet",provider: "Anthropic", apiCallsMonth: 12800, tokensUsed: 14200000, costINR: 86400,  status: "running",   createdDate: "2024-02-15", lastRun: "2024-06-14", description: "Drafts and triages customer support tickets automatically" },
-  { id: "ag4",  name: "Document Summariser",     type: "Document AI",       owner: "Vikram Nair",    department: "Finance & Legal",   model: "claude-3-5-sonnet",provider: "Anthropic", apiCallsMonth: 3100,  tokensUsed: 8800000,  costINR: 52600,  status: "running",   createdDate: "2024-03-01", lastRun: "2024-06-13", description: "Summarises contracts, legal docs and financial reports" },
-  { id: "ag5",  name: "Sales Email Writer",      type: "Internal Tool",     owner: "Anjali Singh",   department: "Sales & Marketing", model: "gpt-4o-mini",      provider: "OpenAI",    apiCallsMonth: 6800,  tokensUsed: 3200000,  costINR: 18400,  status: "running",   createdDate: "2024-03-15", lastRun: "2024-06-14", description: "Personalised sales outreach email generation" },
-  { id: "ag6",  name: "Dataset Validator",       type: "Data Pipeline",     owner: "Suresh Kumar",   department: "Data Science",      model: "gemini-1.5-pro",   provider: "Google",    apiCallsMonth: 2800,  tokensUsed: 22400000, costINR: 92000,  status: "paused",    createdDate: "2024-03-20", lastRun: "2024-06-10", description: "Validates and profiles ML training datasets" },
-  { id: "ag7",  name: "Design Critique Bot",     type: "Code Assistant",    owner: "Neha Kulkarni",  department: "Product & Design",  model: "claude-3-5-sonnet",provider: "Anthropic", apiCallsMonth: 1900,  tokensUsed: 2800000,  costINR: 16800,  status: "paused",    createdDate: "2024-04-01", lastRun: "2024-06-08", description: "Reviews Figma designs and provides accessibility feedback" },
-  { id: "ag8",  name: "Meeting Notes AI",        type: "Document AI",       owner: "Priya Mehta",    department: "Product & Design",  model: "gemini-1.5-pro",   provider: "Google",    apiCallsMonth: 4200,  tokensUsed: 6200000,  costINR: 38400,  status: "running",   createdDate: "2024-04-10", lastRun: "2024-06-14", description: "Transcribes and summarises Microsoft Teams meeting recordings" },
-  { id: "ag9",  name: "Anomaly Detector",        type: "Analytics",         owner: "Rahul Gupta",    department: "Data Science",      model: "gemini-1.5-pro",   provider: "Google",    apiCallsMonth: 1200,  tokensUsed: 18900000, costINR: 96200,  status: "error",     createdDate: "2024-04-15", lastRun: "2024-06-12", description: "Real-time anomaly detection on production metrics" },
-  { id: "ag10", name: "HR Policy Assistant",     type: "Internal Tool",     owner: "Arjun Sharma",   department: "Engineering",       model: "gpt-4o-mini",      provider: "OpenAI",    apiCallsMonth: 980,   tokensUsed: 1100000,  costINR: 5800,   status: "scheduled", createdDate: "2024-05-01", lastRun: "2024-06-14", description: "Answers HR policy queries for employees" },
-  { id: "ag11", name: "Report Generator",        type: "Analytics",         owner: "Riya Desai",     department: "Engineering",       model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 2400,  tokensUsed: 4800000,  costINR: 28200,  status: "running",   createdDate: "2024-05-10", lastRun: "2024-06-14", description: "Auto-generates weekly engineering sprint reports" },
-  { id: "ag12", name: "Copilot Studio Bot",      type: "Customer Support",  owner: "Anjali Singh",   department: "Sales & Marketing", model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 3600,  tokensUsed: 5400000,  costINR: 32800,  status: "running",   createdDate: "2024-05-15", lastRun: "2024-06-14", description: "Microsoft Copilot Studio bot for product demos" },
+  { id: "ag1",  name: "Code Review Bot",        type: "Code Assistant",    owner: "Arjun Sharma",   department: "Engineering",       model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 8420,  tokensUsed: 18200000, costINR: 1400, status: "running",   createdDate: "2024-01-15", lastRun: "2024-06-14", description: "Automated PR review and code quality checks on GitHub" },
+  { id: "ag2",  name: "SQL Generator",           type: "Data Pipeline",     owner: "Rahul Gupta",    department: "Data Science",      model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 5200,  tokensUsed: 9800000,  costINR: 760,  status: "running",   createdDate: "2024-02-01", lastRun: "2024-06-14", description: "Generates and validates SQL queries from natural language" },
+  { id: "ag3",  name: "Customer Reply Agent",    type: "Customer Support",  owner: "Sneha Patil",    department: "Customer Success",  model: "claude-3-5-sonnet",provider: "Anthropic", apiCallsMonth: 12800, tokensUsed: 14200000, costINR: 960,  status: "running",   createdDate: "2024-02-15", lastRun: "2024-06-14", description: "Drafts and triages customer support tickets automatically" },
+  { id: "ag4",  name: "Document Summariser",     type: "Document AI",       owner: "Vikram Nair",    department: "Finance & Legal",   model: "claude-3-5-sonnet",provider: "Anthropic", apiCallsMonth: 3100,  tokensUsed: 8800000,  costINR: 580,  status: "running",   createdDate: "2024-03-01", lastRun: "2024-06-13", description: "Summarises contracts, legal docs and financial reports" },
+  { id: "ag5",  name: "Sales Email Writer",      type: "Internal Tool",     owner: "Anjali Singh",   department: "Sales & Marketing", model: "gpt-4o-mini",      provider: "OpenAI",    apiCallsMonth: 6800,  tokensUsed: 3200000,  costINR: 200,  status: "running",   createdDate: "2024-03-15", lastRun: "2024-06-14", description: "Personalised sales outreach email generation" },
+  { id: "ag6",  name: "Dataset Validator",       type: "Data Pipeline",     owner: "Suresh Kumar",   department: "Data Science",      model: "gemini-1.5-pro",   provider: "Google",    apiCallsMonth: 2800,  tokensUsed: 22400000, costINR: 1020, status: "paused",    createdDate: "2024-03-20", lastRun: "2024-06-10", description: "Validates and profiles ML training datasets" },
+  { id: "ag7",  name: "Design Critique Bot",     type: "Code Assistant",    owner: "Neha Kulkarni",  department: "Product & Design",  model: "claude-3-5-sonnet",provider: "Anthropic", apiCallsMonth: 1900,  tokensUsed: 2800000,  costINR: 190,  status: "paused",    createdDate: "2024-04-01", lastRun: "2024-06-08", description: "Reviews Figma designs and provides accessibility feedback" },
+  { id: "ag8",  name: "Meeting Notes AI",        type: "Document AI",       owner: "Priya Mehta",    department: "Product & Design",  model: "gemini-1.5-pro",   provider: "Google",    apiCallsMonth: 4200,  tokensUsed: 6200000,  costINR: 430,  status: "running",   createdDate: "2024-04-10", lastRun: "2024-06-14", description: "Transcribes and summarises Microsoft Teams meeting recordings" },
+  { id: "ag9",  name: "Anomaly Detector",        type: "Analytics",         owner: "Rahul Gupta",    department: "Data Science",      model: "gemini-1.5-pro",   provider: "Google",    apiCallsMonth: 1200,  tokensUsed: 18900000, costINR: 1070, status: "error",     createdDate: "2024-04-15", lastRun: "2024-06-12", description: "Real-time anomaly detection on production metrics" },
+  { id: "ag10", name: "HR Policy Assistant",     type: "Internal Tool",     owner: "Arjun Sharma",   department: "Engineering",       model: "gpt-4o-mini",      provider: "OpenAI",    apiCallsMonth: 980,   tokensUsed: 1100000,  costINR: 65,   status: "scheduled", createdDate: "2024-05-01", lastRun: "2024-06-14", description: "Answers HR policy queries for employees" },
+  { id: "ag11", name: "Report Generator",        type: "Analytics",         owner: "Riya Desai",     department: "Engineering",       model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 2400,  tokensUsed: 4800000,  costINR: 310,  status: "running",   createdDate: "2024-05-10", lastRun: "2024-06-14", description: "Auto-generates weekly engineering sprint reports" },
+  { id: "ag12", name: "Copilot Studio Bot",      type: "Customer Support",  owner: "Anjali Singh",   department: "Sales & Marketing", model: "GPT-4o",           provider: "OpenAI",    apiCallsMonth: 3600,  tokensUsed: 5400000,  costINR: 365,  status: "running",   createdDate: "2024-05-15", lastRun: "2024-06-14", description: "Microsoft Copilot Studio bot for product demos" },
 ];
 
 export type InvoiceStatus = "paid" | "pending" | "overdue";
@@ -323,51 +323,51 @@ export interface GSTInvoice {
 export const gstInvoices: GSTInvoice[] = [
   {
     id: "inv1", invoiceNo: "MSFT-2024-06-IN-4821", vendor: "Microsoft Azure",
-    month: "Jun 2024", amountINR: 248000, igstINR: 44640, totalINR: 292640,
+    month: "Jun 2024", amountINR: 2756, igstINR: 496, totalINR: 3252,
     vendorGSTIN: "06AAACM8747H1ZW", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 4960, netPayableINR: 287680, status: "pending",
+    tdsINR: 55, netPayableINR: 3197, status: "pending",
     dueDate: "2024-07-15", costCenter: "CC-ENG-001", department: "Engineering",
   },
   {
     id: "inv2", invoiceNo: "OAI-2024-06-IN-3312", vendor: "OpenAI",
-    month: "Jun 2024", amountINR: 82400, igstINR: 14832, totalINR: 97232,
+    month: "Jun 2024", amountINR: 916, igstINR: 165, totalINR: 1081,
     vendorGSTIN: "Foreign Vendor - OIDAR", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 1648, netPayableINR: 95584, status: "paid",
+    tdsINR: 18, netPayableINR: 1063, status: "paid",
     dueDate: "2024-06-30", costCenter: "CC-DS-003", department: "Data Science",
   },
   {
     id: "inv3", invoiceNo: "ANT-2024-06-IN-0891", vendor: "Anthropic",
-    month: "Jun 2024", amountINR: 44200, igstINR: 7956, totalINR: 52156,
+    month: "Jun 2024", amountINR: 491, igstINR: 88, totalINR: 579,
     vendorGSTIN: "Foreign Vendor - OIDAR", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 884, netPayableINR: 51272, status: "paid",
+    tdsINR: 10, netPayableINR: 569, status: "paid",
     dueDate: "2024-06-30", costCenter: "CC-CS-006", department: "Customer Success",
   },
   {
     id: "inv4", invoiceNo: "GCP-2024-06-IN-7741", vendor: "Google Cloud",
-    month: "Jun 2024", amountINR: 38600, igstINR: 6948, totalINR: 45548,
+    month: "Jun 2024", amountINR: 429, igstINR: 77, totalINR: 506,
     vendorGSTIN: "Foreign Vendor - OIDAR", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 772, netPayableINR: 44776, status: "paid",
+    tdsINR: 9, netPayableINR: 497, status: "paid",
     dueDate: "2024-06-30", costCenter: "CC-DS-003", department: "Data Science",
   },
   {
     id: "inv5", invoiceNo: "GH-2024-06-IN-0042", vendor: "GitHub",
-    month: "Jun 2024", amountINR: 36400, igstINR: 6552, totalINR: 42952,
+    month: "Jun 2024", amountINR: 404, igstINR: 73, totalINR: 477,
     vendorGSTIN: "Foreign Vendor - OIDAR", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 728, netPayableINR: 42224, status: "pending",
+    tdsINR: 8, netPayableINR: 469, status: "pending",
     dueDate: "2024-07-10", costCenter: "CC-ENG-001", department: "Engineering",
   },
   {
     id: "inv6", invoiceNo: "AWS-2024-05-IN-8823", vendor: "AWS Bedrock",
-    month: "May 2024", amountINR: 18200, igstINR: 3276, totalINR: 21476,
+    month: "May 2024", amountINR: 202, igstINR: 36, totalINR: 238,
     vendorGSTIN: "Foreign Vendor - OIDAR", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 364, netPayableINR: 21112, status: "overdue",
+    tdsINR: 4, netPayableINR: 234, status: "overdue",
     dueDate: "2024-06-15", costCenter: "CC-PRD-002", department: "Product & Design",
   },
   {
     id: "inv7", invoiceNo: "MSFT-2024-05-IN-4102", vendor: "Microsoft Azure",
-    month: "May 2024", amountINR: 224000, igstINR: 40320, totalINR: 264320,
+    month: "May 2024", amountINR: 2489, igstINR: 448, totalINR: 2937,
     vendorGSTIN: "06AAACM8747H1ZW", ourGSTIN: "27AABCU9603R1ZN", pan: "AABCU9603R",
-    tdsINR: 4480, netPayableINR: 259840, status: "paid",
+    tdsINR: 50, netPayableINR: 2887, status: "paid",
     dueDate: "2024-06-15", costCenter: "CC-ENG-001", department: "Engineering",
   },
 ];

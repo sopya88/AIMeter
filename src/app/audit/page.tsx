@@ -3,7 +3,7 @@ import { useState } from "react";
 import { FileText, Download, CheckCircle, Clock, AlertTriangle, Building2 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { gstInvoices, departments, type InvoiceStatus, type InvoiceVendor } from "@/data/mock";
-import { formatINR, formatNumber } from "@/lib/utils";
+import { formatEUR, formatNumber } from "@/lib/utils";
 
 const statusMeta: Record<InvoiceStatus, { label: string; bg: string; text: string; icon: React.ElementType }> = {
   paid:    { label: "Paid",    bg: "#DCFCE7", text: "#16A34A", icon: CheckCircle },
@@ -22,12 +22,12 @@ const vendorColors: Record<InvoiceVendor, string> = {
 
 // Monthly trend for chart
 const monthlySpend = [
-  { month: "Jan", amountINR: 380000 },
-  { month: "Feb", amountINR: 412000 },
-  { month: "Mar", amountINR: 448000 },
-  { month: "Apr", amountINR: 392000 },
-  { month: "May", amountINR: 506000 },
-  { month: "Jun", amountINR: 468200 },
+  { month: "Jan", amountINR: 4200 },
+  { month: "Feb", amountINR: 4600 },
+  { month: "Mar", amountINR: 5000 },
+  { month: "Apr", amountINR: 4400 },
+  { month: "May", amountINR: 5600 },
+  { month: "Jun", amountINR: 5200 },
 ];
 
 export default function AuditPage() {
@@ -70,10 +70,10 @@ export default function AuditPage() {
       <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
         <div>
           <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>
-            Audit & GST Reports
+            Audit & Invoice Reports
           </h1>
           <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>
-            GST invoice tracking · IGST 18% · TDS 2% · Cost-centre allocation
+            Invoice tracking · VAT 18% · WHT 2% · Cost-centre allocation
           </p>
         </div>
         <button className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium border"
@@ -86,9 +86,9 @@ export default function AuditPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total AI Spend (ex-GST)", value: formatINR(totalAmountINR), color: "#EA580C", icon: Building2 },
-          { label: "Total IGST (18%)",         value: formatINR(totalIGSTINR),   color: "#EF9F27", icon: FileText },
-          { label: "TDS Deducted (2%)",        value: formatINR(totalTDSINR),    color: "#1D9E75", icon: CheckCircle },
+          { label: "Total AI Spend (ex-VAT)", value: formatEUR(totalAmountINR), color: "#EA580C", icon: Building2 },
+          { label: "Total VAT (18%)",          value: formatEUR(totalIGSTINR),   color: "#EF9F27", icon: FileText },
+          { label: "WHT Deducted (2%)",        value: formatEUR(totalTDSINR),    color: "#1D9E75", icon: CheckCircle },
           { label: "Overdue Invoices",          value: String(overdueCount),      color: "#DC2626", icon: AlertTriangle },
         ].map((m) => (
           <div key={m.label} className="rounded-lg border p-3 md:p-4"
@@ -108,7 +108,7 @@ export default function AuditPage() {
       {/* Tab navigation */}
       <div className="flex gap-1 mb-4 border-b" style={{ borderColor: "var(--border)" }}>
         {([
-          { key: "invoices",    label: "GST Invoices" },
+          { key: "invoices",    label: "Invoices" },
           { key: "departments", label: "Dept Allocation" },
           { key: "trend",       label: "Monthly Trend" },
         ] as const).map(({ key, label }) => (
@@ -146,7 +146,7 @@ export default function AuditPage() {
                 <table className="w-full text-sm min-w-[700px]">
                   <thead>
                     <tr style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
-                      {["Invoice No.", "Vendor", "Month", "Amount", "IGST 18%", "TDS 2%", "Net Payable", "Status"].map((h) => (
+                      {["Invoice No.", "Vendor", "Month", "Amount", "VAT 18%", "WHT 2%", "Net Payable", "Status"].map((h) => (
                         <th key={h} className="text-left px-3 py-2.5 text-xs font-medium"
                           style={{ color: "var(--muted)" }}>{h}</th>
                       ))}
@@ -175,10 +175,10 @@ export default function AuditPage() {
                             </div>
                           </td>
                           <td className="px-3 py-2.5 text-xs" style={{ color: "var(--muted)" }}>{inv.month}</td>
-                          <td className="px-3 py-2.5 text-xs font-medium" style={{ color: "var(--text)" }}>{formatINR(inv.amountINR)}</td>
-                          <td className="px-3 py-2.5 text-xs" style={{ color: "#D97706" }}>{formatINR(inv.igstINR)}</td>
-                          <td className="px-3 py-2.5 text-xs" style={{ color: "#1D9E75" }}>{formatINR(inv.tdsINR)}</td>
-                          <td className="px-3 py-2.5 text-xs font-semibold" style={{ color: "var(--accent)" }}>{formatINR(inv.netPayableINR)}</td>
+                          <td className="px-3 py-2.5 text-xs font-medium" style={{ color: "var(--text)" }}>{formatEUR(inv.amountINR)}</td>
+                          <td className="px-3 py-2.5 text-xs" style={{ color: "#D97706" }}>{formatEUR(inv.igstINR)}</td>
+                          <td className="px-3 py-2.5 text-xs" style={{ color: "#1D9E75" }}>{formatEUR(inv.tdsINR)}</td>
+                          <td className="px-3 py-2.5 text-xs font-semibold" style={{ color: "var(--accent)" }}>{formatEUR(inv.netPayableINR)}</td>
                           <td className="px-3 py-2.5">
                             <span className="flex items-center gap-1 text-xs px-1.5 py-0.5 rounded-full w-fit font-medium"
                               style={{ background: sm.bg, color: sm.text }}>
@@ -193,16 +193,16 @@ export default function AuditPage() {
                     <tr style={{ borderTop: "1px solid var(--border)", background: "var(--bg)" }}>
                       <td colSpan={3} className="px-3 py-2.5 text-xs font-semibold" style={{ color: "var(--text)" }}>Total</td>
                       <td className="px-3 py-2.5 text-xs font-semibold" style={{ color: "var(--text)" }}>
-                        {formatINR(filtered.reduce((s, i) => s + i.amountINR, 0))}
+                        {formatEUR(filtered.reduce((s, i) => s + i.amountINR, 0))}
                       </td>
                       <td className="px-3 py-2.5 text-xs font-semibold" style={{ color: "#D97706" }}>
-                        {formatINR(filtered.reduce((s, i) => s + i.igstINR, 0))}
+                        {formatEUR(filtered.reduce((s, i) => s + i.igstINR, 0))}
                       </td>
                       <td className="px-3 py-2.5 text-xs font-semibold" style={{ color: "#1D9E75" }}>
-                        {formatINR(filtered.reduce((s, i) => s + i.tdsINR, 0))}
+                        {formatEUR(filtered.reduce((s, i) => s + i.tdsINR, 0))}
                       </td>
                       <td className="px-3 py-2.5 text-xs font-semibold" style={{ color: "var(--accent)" }}>
-                        {formatINR(filtered.reduce((s, i) => s + i.netPayableINR, 0))}
+                        {formatEUR(filtered.reduce((s, i) => s + i.netPayableINR, 0))}
                       </td>
                       <td />
                     </tr>
@@ -241,10 +241,10 @@ export default function AuditPage() {
                 </div>
                 <div className="mt-4 pt-3 border-t space-y-2" style={{ borderColor: "var(--border)" }}>
                   {[
-                    { label: "Base Amount",  value: formatINR(detail.amountINR),      color: "var(--text)" },
-                    { label: "IGST (18%)",   value: `+ ${formatINR(detail.igstINR)}`, color: "#D97706" },
-                    { label: "TDS (2%)",     value: `âˆ’ ${formatINR(detail.tdsINR)}`,  color: "#1D9E75" },
-                    { label: "Net Payable",  value: formatINR(detail.netPayableINR),  color: "var(--accent)" },
+                    { label: "Base Amount",  value: formatEUR(detail.amountINR),      color: "var(--text)" },
+                    { label: "VAT (18%)",    value: `+ ${formatEUR(detail.igstINR)}`, color: "#D97706" },
+                    { label: "WHT (2%)",     value: `- ${formatEUR(detail.tdsINR)}`,  color: "#1D9E75" },
+                    { label: "Net Payable",  value: formatEUR(detail.netPayableINR),  color: "var(--accent)" },
                   ].map(({ label, value, color }) => (
                     <div key={label} className="flex justify-between text-xs">
                       <span style={{ color: "var(--muted)" }}>{label}</span>
@@ -270,15 +270,15 @@ export default function AuditPage() {
             <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>AI Spend by Department</div>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={byDept} barSize={28} layout="vertical">
-                <XAxis type="number" tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                <XAxis type="number" tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`}
                   tick={{ fontSize: 9, fill: "#6B7280" }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="dept" tick={{ fontSize: 10, fill: "#6B7280" }}
                   axisLine={false} tickLine={false} width={110} />
                 <Tooltip
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  formatter={(val: any) => formatINR(Number(val))}
+                  formatter={(val: any) => formatEUR(Number(val))}
                   contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid var(--border)" }} />
-                <Bar dataKey="totalINR" name="Total Spend (INR)" fill="var(--accent)" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="totalINR" name="Total Spend (EUR)" fill="var(--accent)" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -310,8 +310,8 @@ export default function AuditPage() {
                         style={{ borderBottom: i < departments.length - 1 ? "1px solid var(--border)" : "none" }}>
                         <td className="px-4 py-2.5 text-xs font-medium" style={{ color: "var(--text)" }}>{d.name}</td>
                         <td className="px-4 py-2.5 text-xs font-mono" style={{ color: "var(--muted)" }}>{d.costCenter}</td>
-                        <td className="px-4 py-2.5 text-xs" style={{ color: "var(--text)" }}>{formatINR(d.budgetINR)}</td>
-                        <td className="px-4 py-2.5 text-xs font-semibold" style={{ color: "var(--text)" }}>{formatINR(d.spentINR)}</td>
+                        <td className="px-4 py-2.5 text-xs" style={{ color: "var(--text)" }}>{formatEUR(d.budgetINR)}</td>
+                        <td className="px-4 py-2.5 text-xs font-semibold" style={{ color: "var(--text)" }}>{formatEUR(d.spentINR)}</td>
                         <td className="px-4 py-2.5">
                           <div className="flex items-center gap-1.5">
                             <div className="h-1.5 w-16 rounded-full" style={{ background: "var(--border)" }}>
@@ -336,17 +336,17 @@ export default function AuditPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="rounded-lg border p-4"
             style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-            <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Monthly AI Spend (INR)</div>
+            <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Monthly AI Spend (EUR)</div>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={monthlySpend} barSize={36}>
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6B7280" }} axisLine={false} tickLine={false} />
-                <YAxis tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+                <YAxis tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`}
                   tick={{ fontSize: 9, fill: "#6B7280" }} axisLine={false} tickLine={false} width={48} />
                 <Tooltip
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  formatter={(val: any) => formatINR(Number(val))}
+                  formatter={(val: any) => formatEUR(Number(val))}
                   contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid var(--border)" }} />
-                <Bar dataKey="amountINR" name="Spend (INR)" fill="var(--accent)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="amountINR" name="Spend (EUR)" fill="var(--accent)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -366,7 +366,7 @@ export default function AuditPage() {
                         <span style={{ color: "var(--text)" }}>{v.vendor}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="font-medium" style={{ color: "var(--text)" }}>{formatINR(v.totalINR)}</span>
+                        <span className="font-medium" style={{ color: "var(--text)" }}>{formatEUR(v.totalINR)}</span>
                         <span style={{ color: "var(--muted)" }}>{pct}%</span>
                       </div>
                     </div>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Bot, Cpu, DollarSign, AlertTriangle, Play, Pause, Search } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { agents, departments, type AgentStatus } from "@/data/mock";
-import { formatINR, formatTokens, formatNumber } from "@/lib/utils";
+import { formatEUR, formatTokens, formatNumber } from "@/lib/utils";
 
 const statusMeta: Record<AgentStatus, { label: string; bg: string; text: string; dot: string }> = {
   running:   { label: "Running",   bg: "#DCFCE7", text: "#16A34A", dot: "#16A34A" },
@@ -57,14 +57,14 @@ export default function AgentsPage() {
       <div className="mb-5">
         <h1 className="text-lg md:text-xl font-semibold" style={{ color: "var(--text)" }}>AI Agent Registry</h1>
         <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>
-          Agent-wise API cost · Department attribution · INR billing
+          Agent-wise API cost · Department attribution · EUR billing
         </p>
       </div>
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total Agent Cost (Jun)", value: formatINR(totalCostINR),   color: "#EA580C", icon: DollarSign },
+          { label: "Total Agent Cost (Jun)", value: formatEUR(totalCostINR),   color: "#EA580C", icon: DollarSign },
           { label: "Running Agents",         value: String(runningCount),       color: "#1D9E75", icon: Play },
           { label: "Total API Calls",        value: formatNumber(totalApiCalls),color: "#EF9F27", icon: Cpu },
           { label: "Tokens Consumed",        value: formatTokens(totalTokens),  color: "#D4537E", icon: Bot },
@@ -87,18 +87,18 @@ export default function AgentsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
         <div className="rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-          <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Cost by Department (INR)</div>
+          <div className="text-sm font-medium mb-3" style={{ color: "var(--text)" }}>Cost by Department (EUR)</div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={deptCosts} barSize={28} layout="vertical">
-              <XAxis type="number" tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+              <XAxis type="number" tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`}
                 tick={{ fontSize: 9, fill: "#6B7280" }} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "#6B7280" }}
                 axisLine={false} tickLine={false} width={70} />
               <Tooltip
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                formatter={(val: any) => formatINR(Number(val))}
+                formatter={(val: any) => formatEUR(Number(val))}
                 contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid var(--border)" }} />
-              <Bar dataKey="costINR" name="Cost (INR)" fill="var(--accent)" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="costINR" name="Cost (EUR)" fill="var(--accent)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -121,7 +121,7 @@ export default function AgentsPage() {
                     style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
                   <div>
                     <div className="text-xs font-medium" style={{ color: "var(--text)" }}>{p.name}</div>
-                    <div className="text-[10px]" style={{ color: "var(--muted)" }}>{formatINR(p.costINR)}/mo</div>
+                    <div className="text-[10px]" style={{ color: "var(--muted)" }}>{formatEUR(p.costINR)}/mo</div>
                   </div>
                 </div>
               ))}
@@ -160,7 +160,7 @@ export default function AgentsPage() {
           <table className="w-full text-sm min-w-[860px]">
             <thead>
               <tr style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
-                {["Agent", "Owner", "Department", "Model / Provider", "API Calls", "Tokens", "Monthly Cost (INR)", "Status"].map((h) => (
+                {["Agent", "Owner", "Department", "Model / Provider", "API Calls", "Tokens", "Monthly Cost (EUR)", "Status"].map((h) => (
                   <th key={h} className="text-left px-4 py-2.5 text-xs font-medium" style={{ color: "var(--muted)" }}>{h}</th>
                 ))}
               </tr>
@@ -198,9 +198,9 @@ export default function AgentsPage() {
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--text)" }}>{formatNumber(a.apiCallsMonth)}</td>
                     <td className="px-4 py-3 text-xs" style={{ color: "var(--text)" }}>{formatTokens(a.tokensUsed)}</td>
                     <td className="px-4 py-3 text-xs font-semibold" style={{ color: "var(--text)" }}>
-                      {formatINR(a.costINR)}
+                      {formatEUR(a.costINR)}
                       <div className="text-[10px] font-normal" style={{ color: "var(--muted)" }}>
-                        +{formatINR(a.costINR * 0.18)} IGST
+                        +{formatEUR(a.costINR * 0.20)} VAT
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -226,7 +226,7 @@ export default function AgentsPage() {
                   {formatTokens(filtered.reduce((s, a) => s + a.tokensUsed, 0))}
                 </td>
                 <td className="px-4 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>
-                  {formatINR(filtered.reduce((s, a) => s + a.costINR, 0))}
+                  {formatEUR(filtered.reduce((s, a) => s + a.costINR, 0))}
                 </td>
                 <td />
               </tr>
@@ -256,8 +256,8 @@ export default function AgentsPage() {
               { label: "Provider",      value: detail.provider },
               { label: "Created",       value: detail.createdDate },
               { label: "Last Run",      value: detail.lastRun },
-              { label: "Monthly Cost",  value: formatINR(detail.costINR) },
-              { label: "IGST (18%)",    value: formatINR(detail.costINR * 0.18) },
+              { label: "Monthly Cost",  value: formatEUR(detail.costINR) },
+              { label: "VAT (20%)",     value: formatEUR(detail.costINR * 0.20) },
             ].map(({ label, value }) => (
               <div key={label}>
                 <div className="text-[11px] mb-0.5" style={{ color: "var(--muted)" }}>{label}</div>

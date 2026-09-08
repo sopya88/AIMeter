@@ -2,9 +2,9 @@
 import { useState } from "react";
 import { Users, AlertTriangle, CheckCircle, Clock, Search, Download, Plus, X, Info } from "lucide-react";
 import { licenses as seedLicenses, type LicenseStatus, type LicenseType } from "@/data/mock";
-import { formatINR } from "@/lib/utils";
+import { formatEUR } from "@/lib/utils";
 
-// ── Per-seat pricing reference (INR/month at ~84 INR/USD) ─────────────────────
+// ── Per-seat pricing reference (EUR/month) ───────────────────────────────────
 const TOOL_PRICING: {
   type: LicenseType;
   color: string;
@@ -15,31 +15,31 @@ const TOOL_PRICING: {
 }[] = [
   {
     type: "Microsoft 365 Copilot",
-    color: "#EA580C", usdPerSeat: 30, inrPerSeat: 2508,
+    color: "#EA580C", usdPerSeat: 30, inrPerSeat: 28,
     tier: "M365 Copilot",
     includes: ["Word/Excel/Outlook AI", "Teams meeting summaries", "Copilot Studio"],
   },
   {
     type: "GitHub Copilot",
-    color: "#1A1D23", usdPerSeat: 19, inrPerSeat: 1596,
+    color: "#1A1D23", usdPerSeat: 19, inrPerSeat: 18,
     tier: "Business",
     includes: ["Code completion", "Chat in IDE", "PR summaries", "CLI"],
   },
   {
     type: "Claude for Work",
-    color: "#1D9E75", usdPerSeat: 20, inrPerSeat: 1675,
+    color: "#1D9E75", usdPerSeat: 20, inrPerSeat: 19,
     tier: "Team",
     includes: ["Claude 3.5 Sonnet", "100K context", "Projects", "API access"],
   },
   {
     type: "Gemini Advanced",
-    color: "#EF9F27", usdPerSeat: 20, inrPerSeat: 1675,
+    color: "#EF9F27", usdPerSeat: 20, inrPerSeat: 19,
     tier: "Google One AI Premium",
     includes: ["Gemini 1.5 Pro", "1M token context", "NotebookLM Plus", "Workspace integration"],
   },
   {
     type: "OpenAI ChatGPT Enterprise",
-    color: "#378ADD", usdPerSeat: 25, inrPerSeat: 2090,
+    color: "#378ADD", usdPerSeat: 25, inrPerSeat: 23,
     tier: "Enterprise",
     includes: ["GPT-4o", "Unlimited usage", "Admin controls", "SSO/SAML", "No data training"],
   },
@@ -140,7 +140,7 @@ export default function LicensesPage() {
             AI License Management
           </h1>
           <p className="text-xs md:text-sm mt-0.5" style={{ color: "var(--muted)" }}>
-            Employee-wise AI tool allocation · INR billing · Unused license alerts
+            Employee-wise AI tool allocation · EUR billing · Unused license alerts
           </p>
         </div>
         <div className="flex gap-2">
@@ -170,7 +170,7 @@ export default function LicensesPage() {
             style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
             <div className="text-sm font-semibold" style={{ color: "var(--text)" }}>AI Tool Pricing Reference</div>
             <div className="flex items-center gap-3">
-              <div className="text-xs hidden sm:block" style={{ color: "var(--muted)" }}>Per seat · per month · INR + 18% IGST</div>
+              <div className="text-xs hidden sm:block" style={{ color: "var(--muted)" }}>Per seat · per month · EUR + 20% VAT</div>
               <button
                 onClick={() => setEditPricing((v) => !v)}
                 className="text-xs px-2.5 py-1 rounded-md border font-medium"
@@ -193,7 +193,7 @@ export default function LicensesPage() {
                   style={{ background: t.color + "14", color: t.color }}>{t.tier}</div>
                 {editPricing ? (
                   <div className="mb-2">
-                    <label className="text-[10px] block mb-1" style={{ color: "var(--muted)" }}>INR/seat/month</label>
+                    <label className="text-[10px] block mb-1" style={{ color: "var(--muted)" }}>EUR/seat/month</label>
                     <input
                       type="number" min={0}
                       value={t.inrPerSeat}
@@ -204,17 +204,17 @@ export default function LicensesPage() {
                       style={{ borderColor: t.color, color: "var(--text)", background: "var(--bg)" }}
                     />
                     <div className="text-[10px] mt-1" style={{ color: "var(--muted)" }}>
-                      IGST: {formatINR(t.inrPerSeat * 0.18)} · Total: {formatINR(t.inrPerSeat * 1.18)}
+                      VAT: {formatEUR(t.inrPerSeat * 0.20)} · Total: {formatEUR(t.inrPerSeat * 1.20)}
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="mb-1">
-                      <span className="text-lg font-bold" style={{ color: "var(--text)" }}>{formatINR(t.inrPerSeat)}</span>
+                      <span className="text-lg font-bold" style={{ color: "var(--text)" }}>{formatEUR(t.inrPerSeat)}</span>
                       <span className="text-[10px] ml-1" style={{ color: "var(--muted)" }}>/seat/mo</span>
                     </div>
                     <div className="text-[10px] mb-2" style={{ color: "var(--muted)" }}>
-                      +{formatINR(t.inrPerSeat * 0.18)} IGST
+                      +{formatEUR(t.inrPerSeat * 0.20)} VAT
                     </div>
                   </>
                 )}
@@ -230,7 +230,7 @@ export default function LicensesPage() {
           </div>
           <div className="px-4 py-2 border-t text-[10px]"
             style={{ borderColor: "var(--border)", background: "var(--bg)", color: "var(--muted)" }}>
-            Note: Rates are editable — changes apply to new license allocations. All amounts exclude TDS (2% deductible at source for software services).
+            Note: Rates are editable — changes apply to new license allocations. VAT (20%) applies per EU regulations. WHT may apply per local tax rules.
           </div>
         </div>
       )}
@@ -286,7 +286,7 @@ export default function LicensesPage() {
                         </div>
                       </div>
                       <div className="text-xs font-semibold flex-shrink-0" style={{ color: t.color }}>
-                        {formatINR(t.inrPerSeat)}/mo
+                        {formatEUR(t.inrPerSeat)}/mo
                       </div>
                     </label>
                   ))}
@@ -294,8 +294,8 @@ export default function LicensesPage() {
                 {/* Cost callout */}
                 <div className="mt-2 px-3 py-2 rounded-lg text-xs"
                   style={{ background: "var(--accent)" + "12", color: "var(--accent)" }}>
-                  Seat cost: <strong>{formatINR(pricing.inrPerSeat)}/month</strong> + {formatINR(pricing.inrPerSeat * 0.18)} IGST
-                  = <strong>{formatINR(pricing.inrPerSeat * 1.18)} total</strong>
+                  Seat cost: <strong>{formatEUR(pricing.inrPerSeat)}/month</strong> + {formatEUR(pricing.inrPerSeat * 0.20)} VAT
+                  = <strong>{formatEUR(pricing.inrPerSeat * 1.20)} total</strong>
                 </div>
               </div>
 
@@ -380,10 +380,10 @@ export default function LicensesPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total Monthly Spend",  value: formatINR(totalMonthlyINR), sub: `${rows.length} licenses`,        color: "#EA580C", icon: Users },
+          { label: "Total Monthly Spend",  value: formatEUR(totalMonthlyINR), sub: `${rows.length} licenses`,        color: "#EA580C", icon: Users },
           { label: "Active Licenses",      value: String(activeCount),        sub: `${rows.length} total allocated`, color: "#1D9E75", icon: CheckCircle },
           { label: "Unused Licenses",      value: String(unusedCount),        sub: "No activity 30+ days",           color: "#D97706", icon: AlertTriangle },
-          { label: "Unused License Cost",  value: formatINR(unusedSpend),     sub: "Potential monthly saving",       color: "#DC2626", icon: AlertTriangle },
+          { label: "Unused License Cost",  value: formatEUR(unusedSpend),     sub: "Potential monthly saving",       color: "#DC2626", icon: AlertTriangle },
         ].map((m) => (
           <div key={m.label} className="rounded-lg border p-3 md:p-4"
             style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
@@ -416,7 +416,7 @@ export default function LicensesPage() {
               <div className="text-[10px]" style={{ color: "var(--muted)" }}>
                 {t.active} active · {t.unused} unused
               </div>
-              <div className="text-xs font-medium mt-1" style={{ color: t.color }}>{formatINR(t.spendINR)}/mo</div>
+              <div className="text-xs font-medium mt-1" style={{ color: t.color }}>{formatEUR(t.spendINR)}/mo</div>
             </div>
           ))}
         </div>
@@ -507,10 +507,10 @@ export default function LicensesPage() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>
-                        {formatINR(l.monthlySpendINR)}
+                        {formatEUR(l.monthlySpendINR)}
                       </div>
                       <div className="text-[10px]" style={{ color: "var(--muted)" }}>
-                        +{formatINR(l.monthlySpendINR * 0.18)} IGST
+                        +{formatEUR(l.monthlySpendINR * 0.20)} VAT
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -531,19 +531,19 @@ export default function LicensesPage() {
           <div className="text-xs" style={{ color: "var(--muted)" }}>
             Total:{" "}
             <span className="font-semibold" style={{ color: "var(--text)" }}>
-              {formatINR(filtered.reduce((s, l) => s + l.monthlySpendINR, 0))}/mo
+              {formatEUR(filtered.reduce((s, l) => s + l.monthlySpendINR, 0))}/mo
             </span>
           </div>
           <div className="text-xs" style={{ color: "var(--muted)" }}>
-            IGST (18%):{" "}
+            VAT (20%):{" "}
             <span className="font-semibold" style={{ color: "var(--text)" }}>
-              {formatINR(filtered.reduce((s, l) => s + l.monthlySpendINR, 0) * 0.18)}/mo
+              {formatEUR(filtered.reduce((s, l) => s + l.monthlySpendINR, 0) * 0.20)}/mo
             </span>
           </div>
           <div className="text-xs" style={{ color: "#D97706" }}>
             Unused waste:{" "}
             <span className="font-semibold">
-              {formatINR(filtered.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/mo
+              {formatEUR(filtered.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/mo
             </span>
           </div>
         </div>

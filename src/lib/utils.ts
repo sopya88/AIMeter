@@ -22,8 +22,11 @@ export function formatTokens(n: number): string {
   return String(n);
 }
 
-export function formatINR(amount: number, decimals = 0): string {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency", currency: "INR", minimumFractionDigits: decimals, maximumFractionDigits: decimals,
+export function formatEUR(amount: number, decimals = 0): string {
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency", currency: "EUR", minimumFractionDigits: decimals, maximumFractionDigits: decimals,
   }).format(amount);
 }
+
+/** @deprecated use formatEUR */
+export const formatINR = formatEUR;

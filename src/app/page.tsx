@@ -9,7 +9,7 @@ import {
   dailyUsage, providerColors, providerBreakdown, summaryMetrics,
   departments, licenses,
 } from "@/data/mock";
-import { formatUSD, formatTokens, formatNumber, formatINR } from "@/lib/utils";
+import { formatUSD, formatTokens, formatNumber, formatEUR } from "@/lib/utils";
 
 type GroupBy = "openai" | "anthropic" | "google" | "cohere";
 const GROUP_OPTS: { value: GroupBy; label: string }[] = [
@@ -112,16 +112,16 @@ export default function Dashboard() {
         <div className="rounded-lg border p-4"
           style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
           <div className="flex items-center justify-between mb-3">
-            <div className="text-sm font-medium" style={{ color: "var(--text)" }}>Dept. AI Spend (₹)</div>
+            <div className="text-sm font-medium" style={{ color: "var(--text)" }}>Dept. AI Spend (€)</div>
             <a href="/audit" className="text-xs" style={{ color: "var(--accent)" }}>View audit â†’</a>
           </div>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={departments.map((d) => ({ name: d.name.split(" ")[0], spent: d.spentINR, budget: d.budgetINR }))} barSize={14} barGap={2}>
               <XAxis dataKey="name" tick={{ fontSize: 9, fill: "#6B7280" }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} tick={{ fontSize: 8, fill: "#6B7280" }} axisLine={false} tickLine={false} width={38} />
+              <YAxis tickFormatter={(v) => `€${(v / 1000).toFixed(1)}k`} tick={{ fontSize: 8, fill: "#6B7280" }} axisLine={false} tickLine={false} width={38} />
               <Tooltip
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                formatter={(val: any) => formatINR(Number(val))}
+                formatter={(val: any) => formatEUR(Number(val))}
                 contentStyle={{ fontSize: 11, borderRadius: 6, border: "1px solid var(--border)" }} />
               <Bar dataKey="budget" name="Budget"  fill="var(--border)"  radius={[3, 3, 0, 0]} />
               <Bar dataKey="spent"  name="Spent"   fill="var(--accent)"  radius={[3, 3, 0, 0]} />
@@ -140,8 +140,8 @@ export default function Dashboard() {
             {[
               { label: "Total Licenses",  value: String(licenses.length),                                            color: "#EA580C", icon: Shield },
               { label: "Unused",          value: String(licenses.filter((l) => l.status === "unused").length),       color: "#D97706", icon: AlertTriangle },
-              { label: "Monthly Spend",   value: formatINR(licenses.reduce((s, l) => s + l.monthlySpendINR, 0)),     color: "#1D9E75", icon: Users },
-              { label: "Wasted/month",    value: formatINR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0)), color: "#DC2626", icon: AlertTriangle },
+              { label: "Monthly Spend",   value: formatEUR(licenses.reduce((s, l) => s + l.monthlySpendINR, 0)),     color: "#1D9E75", icon: Users },
+              { label: "Wasted/month",    value: formatEUR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0)), color: "#DC2626", icon: AlertTriangle },
             ].map((m) => (
               <div key={m.label} className="rounded-lg border p-2.5"
                 style={{ borderColor: "var(--border)", background: "var(--bg)" }}>
@@ -156,7 +156,7 @@ export default function Dashboard() {
           <div className="text-[10px] px-2 py-1.5 rounded"
             style={{ background: "#FEF3C7", color: "#D97706" }}>
             âš  {licenses.filter((l) => l.status === "unused").length} unused licenses costing{" "}
-            {formatINR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/month.{" "}
+            {formatEUR(licenses.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0))}/month.{" "}
             <a href="/licenses" className="font-semibold underline">Review now</a>
           </div>
         </div>
