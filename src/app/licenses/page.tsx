@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Users, AlertTriangle, CheckCircle, Clock, Search, Download, Plus, X, Info } from "lucide-react";
+import { Users, AlertTriangle, CheckCircle, Clock, Search, Download, Plus, X, Info, RefreshCw, Wifi } from "lucide-react";
+import { formatNumber } from "@/lib/utils";
 import { licenses as seedLicenses, type LicenseStatus, type LicenseType } from "@/data/mock";
 import { formatEUR } from "@/lib/utils";
 
@@ -91,19 +92,21 @@ export default function LicensesPage() {
     return matchSearch && matchStatus && matchDept;
   });
 
-  const totalMonthlyINR = rows.reduce((s, l) => s + l.monthlySpendINR, 0);
-  const unusedCount     = rows.filter((l) => l.status === "unused").length;
-  const unusedSpend     = rows.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0);
-  const activeCount     = rows.filter((l) => l.status === "active").length;
+  const totalMonthlyINR  = rows.reduce((s, l) => s + l.monthlySpendINR, 0);
+  const unusedCount      = rows.filter((l) => l.status === "unused").length;
+  const unusedSpend      = rows.filter((l) => l.status === "unused").reduce((s, l) => s + l.monthlySpendINR, 0);
+  const activeCount      = rows.filter((l) => l.status === "active").length;
+  const totalRequests    = rows.reduce((s, l) => s + l.requestsMonth, 0);
 
   const byType = pricingState.map((t) => {
     const typeRows = rows.filter((l) => l.licenseType === t.type);
     return {
       ...t,
-      total:   typeRows.length,
-      active:  typeRows.filter((l) => l.status === "active").length,
-      unused:  typeRows.filter((l) => l.status === "unused").length,
-      spendINR: typeRows.reduce((s, l) => s + l.monthlySpendINR, 0),
+      total:        typeRows.length,
+      active:       typeRows.filter((l) => l.status === "active").length,
+      unused:       typeRows.filter((l) => l.status === "unused").length,
+      spendINR:     typeRows.reduce((s, l) => s + l.monthlySpendINR, 0),
+      totalRequests: typeRows.reduce((s, l) => s + l.requestsMonth, 0),
     };
   }).filter((t) => t.total > 0);
 
@@ -123,6 +126,8 @@ export default function LicensesPage() {
       monthlySpendINR: pricing.inrPerSeat,
       allocatedDate:   new Date().toISOString().slice(0, 10),
       unusedDays:      0,
+      requestsMonth:   0,
+      activeDays:      0,
     };
     setRows((prev) => [newRow, ...prev]);
     setForm(blankForm);
@@ -377,13 +382,40 @@ export default function LicensesPage() {
         </div>
       )}
 
+      {/* ── Connected Data Sources strip ──────────────────────────────── */}
+      <div className="rounded-lg border px-4 py-3 mb-5 flex flex-wrap items-center gap-x-5 gap-y-2"
+        style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <Wifi size={12} style={{ color: "var(--accent)" }} />
+          <span className="text-xs font-semibold" style={{ color: "var(--text)" }}>Connected Sources</span>
+        </div>
+        <div className="h-4 border-l hidden sm:block" style={{ borderColor: "var(--border)" }} />
+        {[
+          { name: "Microsoft 365 Admin API", syncMins: 3  },
+          { name: "GitHub Copilot API",       syncMins: 3  },
+          { name: "OpenAI Usage API",          syncMins: 5  },
+          { name: "Anthropic Admin",           syncMins: 8  },
+          { name: "Google Workspace API",      syncMins: 5  },
+        ].map((src) => (
+          <div key={src.name} className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#16A34A" }} />
+            <span className="text-xs" style={{ color: "var(--text)" }}>{src.name}</span>
+            <span className="text-[10px]" style={{ color: "var(--muted)" }}>· {src.syncMins}m ago</span>
+          </div>
+        ))}
+        <div className="ml-auto flex items-center gap-1.5">
+          <RefreshCw size={11} style={{ color: "var(--muted)" }} />
+          <span className="text-[10px]" style={{ color: "var(--muted)" }}>Last full sync: Today, 09:42</span>
+        </div>
+      </div>
+
       {/* KPI cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {[
-          { label: "Total Monthly Spend",  value: formatEUR(totalMonthlyINR), sub: `${rows.length} licenses`,        color: "#EA580C", icon: Users },
-          { label: "Active Licenses",      value: String(activeCount),        sub: `${rows.length} total allocated`, color: "#1D9E75", icon: CheckCircle },
-          { label: "Unused Licenses",      value: String(unusedCount),        sub: "No activity 30+ days",           color: "#D97706", icon: AlertTriangle },
-          { label: "Unused License Cost",  value: formatEUR(unusedSpend),     sub: "Potential monthly saving",       color: "#DC2626", icon: AlertTriangle },
+          { label: "Total Monthly Spend",   value: formatEUR(totalMonthlyINR),    sub: `${rows.length} licenses`,          color: "#EA580C", icon: Users },
+          { label: "Active Licenses",       value: String(activeCount),           sub: `${rows.length} total allocated`,   color: "#1D9E75", icon: CheckCircle },
+          { label: "Total Interactions",    value: formatNumber(totalRequests),   sub: "This month · all tools",           color: "#378ADD", icon: RefreshCw },
+          { label: "Unused License Cost",   value: formatEUR(unusedSpend),        sub: `${unusedCount} idle · save/month`, color: "#DC2626", icon: AlertTriangle },
         ].map((m) => (
           <div key={m.label} className="rounded-lg border p-3 md:p-4"
             style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
@@ -417,6 +449,7 @@ export default function LicensesPage() {
                 {t.active} active · {t.unused} unused
               </div>
               <div className="text-xs font-medium mt-1" style={{ color: t.color }}>{formatEUR(t.spendINR)}/mo</div>
+              <div className="text-[10px] mt-0.5" style={{ color: "var(--muted)" }}>{formatNumber(t.totalRequests)} interactions</div>
             </div>
           ))}
         </div>
@@ -469,31 +502,43 @@ export default function LicensesPage() {
           </button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[760px]">
+          <table className="w-full text-sm min-w-[900px]">
             <thead>
               <tr style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}>
-                {["Employee", "Department", "Role", "License / Tool", "Status", "Last Used", "Monthly Cost", "Unused Days"].map((h) => (
+                {["Employee", "License / Tool", "Status", "Active Days", "Interactions", "Utilization", "Monthly Cost"].map((h) => (
                   <th key={h} className="text-left px-4 py-2.5 text-xs font-medium" style={{ color: "var(--muted)" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map((l, i) => {
-                const sm = statusMeta[l.status];
+                const sm     = statusMeta[l.status];
                 const lcolor = licenseColors[l.licenseType];
+                const WORK_DAYS = 22;
+                const util = l.activeDays >= 15 ? { label: "High",   bg: "#DCFCE7", text: "#16A34A" }
+                           : l.activeDays >= 8  ? { label: "Medium", bg: "#FFF7ED", text: "#EA580C" }
+                           : l.activeDays >= 3  ? { label: "Low",    bg: "#FEF3C7", text: "#D97706" }
+                           :                      { label: "Idle",   bg: "#FEF2F2", text: "#DC2626" };
                 return (
                   <tr key={l.id}
                     style={{ borderBottom: i < filtered.length - 1 ? "1px solid var(--border)" : "none" }}>
                     <td className="px-4 py-3">
                       <div className="text-xs font-medium" style={{ color: "var(--text)" }}>{l.employee}</div>
-                      <div className="text-[10px] mt-0.5" style={{ color: "var(--muted)" }}>{l.email}</div>
+                      <div className="text-[10px] mt-0.5" style={{ color: "var(--muted)" }}>{l.department} · {l.role}</div>
                     </td>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--muted)" }}>{l.department}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--muted)" }}>{l.role}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: lcolor }} />
-                        <span className="text-xs font-medium" style={{ color: "var(--text)" }}>{l.licenseType}</span>
+                        <div>
+                          <div className="text-xs font-medium" style={{ color: "var(--text)" }}>{l.licenseType}</div>
+                          <div className="text-[10px]" style={{ color: "var(--muted)" }}>via {
+                            l.licenseType === "GitHub Copilot" ? "GitHub API" :
+                            l.licenseType === "Microsoft 365 Copilot" ? "M365 Admin API" :
+                            l.licenseType === "Claude for Work" ? "Anthropic Admin" :
+                            l.licenseType === "Gemini Advanced" ? "Google Workspace API" :
+                            "OpenAI Usage API"
+                          }</div>
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -502,8 +547,31 @@ export default function LicensesPage() {
                         <sm.icon size={10} />{sm.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs" style={{ color: l.lastUsed ? "var(--text)" : "var(--muted)" }}>
-                      {l.lastUsed ?? "Never"}
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-20 rounded-full flex-shrink-0" style={{ background: "var(--border)" }}>
+                          <div className="h-1.5 rounded-full"
+                            style={{
+                              width: `${Math.min((l.activeDays / WORK_DAYS) * 100, 100)}%`,
+                              background: l.activeDays >= 15 ? "#16A34A" : l.activeDays >= 8 ? "var(--accent)" : "#D97706",
+                            }} />
+                        </div>
+                        <span className="text-xs" style={{ color: "var(--muted)" }}>{l.activeDays}/{WORK_DAYS}d</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {l.requestsMonth > 0
+                        ? <div>
+                            <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>{formatNumber(l.requestsMonth)}</div>
+                            <div className="text-[10px]" style={{ color: "var(--muted)" }}>interactions</div>
+                          </div>
+                        : <span className="text-xs" style={{ color: "var(--muted)" }}>—</span>}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: util.bg, color: util.text }}>
+                        {util.label}
+                      </span>
                     </td>
                     <td className="px-4 py-3">
                       <div className="text-xs font-semibold" style={{ color: "var(--text)" }}>
@@ -512,11 +580,6 @@ export default function LicensesPage() {
                       <div className="text-[10px]" style={{ color: "var(--muted)" }}>
                         +{formatEUR(l.monthlySpendINR * 0.20)} VAT
                       </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      {l.unusedDays > 0
-                        ? <span className="text-xs font-semibold" style={{ color: "#D97706" }}>{l.unusedDays}d</span>
-                        : <span className="text-xs" style={{ color: "var(--muted)" }}>-</span>}
                     </td>
                   </tr>
                 );
